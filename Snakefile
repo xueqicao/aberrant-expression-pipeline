@@ -100,3 +100,4 @@ htmlOutputPath = "Output/html"
 rule all:
     input: rules.Index.output, htmlOutputPath + "/readme.html"
     output: touch("Output/all.done")
+

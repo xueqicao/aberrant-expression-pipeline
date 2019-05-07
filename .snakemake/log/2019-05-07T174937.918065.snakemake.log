@@ -1,0 +1,8 @@
+Structuring dependencies...
+Dependencies file generated.
+
+NameError in line 7 of /data/ouga04b/ag_gagneur/home/salazar/Documents/workspace/aberrant-expression-pipeline/.wBuild.depend:
+name 'standardFileNames' is not defined
+  File "/data/ouga04b/ag_gagneur/home/salazar/Documents/workspace/aberrant-expression-pipeline/Snakefile", line 2, in <module>
+  File "/data/ouga04b/ag_gagneur/home/salazar/Documents/workspace/aberrant-expression-pipeline/.wBuild/wBuild.snakefile", line 9, in <module>
+  File "/data/ouga04b/ag_gagneur/home/salazar/Documents/workspace/aberrant-expression-pipeline/.wBuild.depend", line 7, in <module>
