@@ -4,7 +4,6 @@
 #' wb:
 #'  input:
 #'   - ods: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/ods.Rds"`'
-#'   - functions: "Scripts/_functions/gene_annotation/add_gene_info_cols.R"
 #'  output:
 #'   - results: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'   - results_all: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/OUTRIDER_results_all.Rds"`'
@@ -22,9 +21,11 @@ suppressPackageStartupMessages({
     library(ggplot2)
     library(data.table)
     library(dplyr)
+    devtools::load_all("../genetic-diagnosis-tools")
 })
 
-source(snakemake@input$functions)
+# Removed - functions: "Scripts/_functions/gene_annotation/add_gene_info_cols.R"
+#source(snakemake@input$functions)
 
 ods <- readRDS(snakemake@input$ods)
 res <- OUTRIDER::results(ods, all = TRUE)

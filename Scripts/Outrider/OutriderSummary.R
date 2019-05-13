@@ -4,7 +4,6 @@
 #' wb:
 #'  input:
 #'   - ods: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/ods.Rds"`'
-#'   - functions: "Scripts/_functions/gene_annotation/add_gene_info_cols.R"
 #'   - results: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'   - results_public: "/s/public_webshare/project/genetic_diagnosis/results/{annotation}/OUTRIDER_results_{dataset}.tsv"
 #'  output:
@@ -25,9 +24,11 @@ suppressPackageStartupMessages({
     library(dplyr)
     library(ggbeeswarm)
     library(ggthemes)
+    devtools::load_all("../genetic-diagnosis-tools")
 })
 
-source(snakemake@input$functions)
+# Removed #'   - functions: "Scripts/_functions/gene_annotation/add_gene_info_cols.R"
+#source(snakemake@input$functions)
 
 #' ## Read ods object
 ods <- readRDS(snakemake@input$ods)

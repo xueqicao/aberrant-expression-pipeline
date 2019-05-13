@@ -23,9 +23,10 @@ suppressPackageStartupMessages({
     library(dplyr)
     library(cowplot)
     library(OUTRIDER)
+    devtools::load_all("../genetic-diagnosis-tools")
 })
 
-source("Scripts/_functions/gene_annotation/add_gene_info_cols.R")
+#source("Scripts/_functions/gene_annotation/add_gene_info_cols.R")
 
 #' ## Results
 res_ss <- fread(snakemake@input$res_ss)
