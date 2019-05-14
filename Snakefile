@@ -2,15 +2,15 @@ import pandas as pd
 import os
 import numpy as np
 
-configfile: "wbuild.yaml"
+configfile: "../genetic_diagnosis_modified/wbuild.yaml"
 
 subworkflow standardFileNames:
     workdir:
         "../sample_annotation"
     snakefile:
-        "../../sample_annotation/Snakefile"
+        "../sample_annotation/Snakefile"
     configfile:
-        "../../sample_annotation/wbuild.yaml"
+        "../sample_annotation/wbuild.yaml"
 
 
 def outrider_files(sa_file = config["SAMPLE_ANNOTATION"]):
