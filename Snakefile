@@ -10,7 +10,7 @@ parser = MyConfigParser(config)
 
 # Only needed for Aberrant Expression: Outrider
 
-outrider_all_ids, outrider_filtered = parser.geOutriderFiles("RNA_Seq")
+outrider_all_ids, outrider_filtered = parser.geOutriderFiles("RNA_seq")
 config["outrider"] = outrider_all_ids
 config["outrider_filtered"] = outrider_filtered
 
