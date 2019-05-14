@@ -1,7 +1,8 @@
 import sys
 # Add the folder path for the python parsing functions to the sys.path list
-#sys.path.append('../genetic_diagnosis_modified/Scripts/src')
-sys.path.insert(0,'../genetic_diagnosis_modified/Scripts/src') 
+#sys.path.append('../genetic_diagnosis_modified/Scripts/src/python')
+sys.path.insert(0,'../genetic_diagnosis_modified/Scripts/src/python') 
+
 import configParser
 
 configfile: "wbuild.yaml" 
