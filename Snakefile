@@ -7,6 +7,14 @@ from configParser import MyConfigParser
 configfile: "wbuild.yaml" 
 parser = MyConfigParser(config)
 
+subworkflow standardFileNames:
+    workdir:
+        "../sample_annotation"
+    snakefile:
+        "../sample_annotation/Snakefile"
+    configfile:
+        "../sample_annotation/wbuild.yaml"
+
 
 # Only needed for Aberrant Expression: Outrider
 
