@@ -4,6 +4,7 @@ import sys
 sys.path.insert(0,'../genetic_diagnosis_modified/Scripts/src/python') 
 
 import configParser
+from configParser import MyConfigParser
 
 configfile: "wbuild.yaml" 
 parser = MyConfigParser(config)
