@@ -3,12 +3,10 @@ import sys
 #sys.path.append('../genetic_diagnosis_modified/Scripts/src/python')
 sys.path.insert(0,'../genetic_diagnosis_modified/Scripts/src/python') 
 
-from python import configParser
-#import configParser.ConfigParser
-#from configParser import ConfigParser
+import configParser
 
 configfile: "wbuild.yaml" 
-parser = configParser(config)
+parser = MyConfigParser(config)
 
 
 # set config variables
