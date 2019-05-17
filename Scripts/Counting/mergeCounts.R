@@ -3,7 +3,7 @@
 #' author: Michaela Muller
 #' wb:
 #'  input: 
-#'    - counts: '`sm lambda wildcards: expand(config["PROC_RESULTS"] + "/{{annotation}}/counts/{sampleID}.Rds", sampleID=config["outrider"][wildcards.dataset])`'
+#'    - counts: '`sm lambda wildcards: parser.getCountFileByOutriderGroup(wildcards.dataset)`'
 #'    - gene_annot_dt: "/s/project/genetic_diagnosis/resource/gencode_{annotation}_unique_gene_name.tsv"
 #'  output:
 #'    - counts: '`sm config["PROC_RESULTS"] + "/{annotation}/counts/{dataset}/total_counts.Rds"`'

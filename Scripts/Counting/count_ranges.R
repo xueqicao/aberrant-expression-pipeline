@@ -3,7 +3,7 @@
 #' author: mumichae, vyepez
 #' wb:
 #'  input:
-#'   - gtex_txdb: '`sm config["PROC_RESULTS"] + "/v19/txdb.db"`'
+#'   - gtex_txdb: '`sm parser.getProcResultsDir() + "/v19/txdb.db"`'
 #'   - gencode_txdb: '`sm config["PROC_RESULTS"] + "/v29/txdb.db"`'
 #'  output:
 #'   - gtex_op: '`sm config["PROC_RESULTS"] + "/v19/counts/exons_by_gene_op.Rds"`'
