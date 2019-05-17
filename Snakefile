@@ -1,8 +1,11 @@
-import pandas as pd
-import os
-import numpy as np
+import sys
+# Add the folder path for the python parsing functions to the sys.path list
+sys.path.insert(0,'../genetic_diagnosis_modified/Scripts/src/python') 
+import configParser
+from configParser import MyConfigParser
 
-configfile: "wbuild.yaml" #"../genetic_diagnosis_modified/wbuild.yaml"
+configfile: "wbuild.yaml" 
+parser = MyConfigParser(config)
 
 subworkflow standardFileNames:
     workdir:
@@ -13,15 +16,9 @@ subworkflow standardFileNames:
         "../sample_annotation/wbuild.yaml"
 
 
-# set config variables
-#mae
-vcfs, rnas = mae_files()
-config["vcfs"] = vcfs
-config["rnas"] = rnas
-config["mae_ids"] = list(map('-'.join, zip(vcfs, rnas)))
+# Only needed for Aberrant Expression: Outrider
 
-#outrider
-outrider_all_ids, outrider_filtered = outrider_files()
+outrider_all_ids, outrider_filtered = parser.geOutriderFiles("RNA_seq")
 config["outrider"] = outrider_all_ids
 config["outrider_filtered"] = outrider_filtered
 
