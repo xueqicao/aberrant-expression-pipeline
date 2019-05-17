@@ -4,7 +4,7 @@
 #' wb:
 #'  input: 
 #'    - counts: '`sm lambda wildcards: parser.getCountFileByOutriderGroup(wildcards.dataset)`'
-#'    - gene_annot_dt: '`sm config["GENE_INFO"]`'
+#'    - gene_annot_dt: '`sm lambda wildcards: parser.getGeneInfoFile(wildcards.annotation) `'
 #'  output:
 #'    - counts: '`sm parser.getgetProcResultsDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
 #'  threads: 30
