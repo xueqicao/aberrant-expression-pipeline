@@ -3,10 +3,10 @@
 #' author: Michaela Mueller, vyepez
 #' wb:
 #'  input:
-#'   - res_ss: '`sm config["PROC_RESULTS"] + "/v29_overlap/outrider/fib_ss/OUTRIDER_results.tsv"`'
-#'   - res_ns: '`sm config["PROC_RESULTS"] + "/v29_overlap/outrider/fib_ns/OUTRIDER_results.tsv"`'
+#'   - res_ss: '`sm parser.getProcResultsDir() + "/v29_overlap/outrider/fib_ss/OUTRIDER_results.tsv"`'
+#'   - res_ns: '`sm parser.getProcResultsDir() + "/v29_overlap/outrider/fib_ns/OUTRIDER_results.tsv"`'
 #'  output:
-#'   - results: '`sm config["PROC_RESULTS"] + "/v29_overlap/outrider/OUTRIDER_results.tsv"`'
+#'   - results: '`sm parser.getProcResultsDir() + "/v29_overlap/outrider/OUTRIDER_results.tsv"`'
 #' output:
 #'   html_document:
 #'    code_folding: show
