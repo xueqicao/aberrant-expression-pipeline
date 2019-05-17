@@ -3,11 +3,11 @@
 #' author: mumichae
 #' wb:
 #'  input:
-#'   - ods: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'   - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds"`'
 #'  output:
-#'   - results: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
-#'   - results_all: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/OUTRIDER_results_all.Rds"`'
-#'   - results_public: "/s/public_webshare/project/genetic_diagnosis/results/{annotation}/OUTRIDER_results_{dataset}.tsv"
+#'   - results: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
+#'   - results_all: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results_all.Rds"`'
+#'   - results_public: '`sm config["webDir"] + "/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'  type: script
 #'---
 
