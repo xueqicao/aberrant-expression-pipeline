@@ -4,7 +4,7 @@
 #' wb:
 #'  input:
 #'   - sample_bam: '`sm standardFileNames("Data/helmholtz/{sampleID}/RNAout/paired-endout/stdFilenames/{sampleID}.bam")`'
-#'   - features: '`sm config["COUNT_RANGES"]`'
+#'   - features: '`sm lambda wildcards: parser.getCountRangesFile(wildcards.annotation) `'
 #'  output:
 #'   - counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
