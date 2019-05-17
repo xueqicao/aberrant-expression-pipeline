@@ -4,3 +4,7 @@
 .RData
 .Ruserdata
 .ipynb*
+
+# wBuild temporary files
+.snakemake*
+.wBuild*
