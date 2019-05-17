@@ -7,7 +7,7 @@
 #'   - results: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'   - results_public: '`sm config["webDir"] + "/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'  output:
-#'   - wBhtml: "Output/html/AberrantExpression/Outrider/{annotation}/OutriderSummary_{dataset}.html"
+#'   - wBhtml: "Output/html/Outrider/{annotation}/OutriderSummary_{dataset}.html"
 #'  type: noindex
 #'---
 
@@ -79,9 +79,9 @@ if (nrow(res) > 0) {
 }
 
 #' ### Download results table
-results_link <- paste0('https://i12g-gagneurweb.informatik.tu-muenchen.de/project/genetic_diagnosis/results/', snakemake@wildcards$annotation,'/OUTRIDER_results_', snakemake@wildcards$dataset, '.tsv')
+#results_link <- paste0('https://i12g-gagneurweb.informatik.tu-muenchen.de/project/genetic_diagnosis/results/', snakemake@wildcards$annotation,'/OUTRIDER_results_', snakemake@wildcards$dataset, '.tsv')
 #' [Download OUTRIDER results table](`r results_link`)
-DT::datatable(res, caption = "OUTRIDER results", style = 'bootstrap', filter = 'top')
+#DT::datatable(res, caption = "OUTRIDER results", style = 'bootstrap', filter = 'top')
 
 #' ### Visualize Results
 #' Distribution of fold changes (FC)
