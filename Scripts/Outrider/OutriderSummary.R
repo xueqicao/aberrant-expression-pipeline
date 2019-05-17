@@ -3,9 +3,9 @@
 #' author: mumichae, vyepez
 #' wb:
 #'  input:
-#'   - ods: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/ods.Rds"`'
-#'   - results: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
-#'   - results_public: "/s/public_webshare/project/genetic_diagnosis/results/{annotation}/OUTRIDER_results_{dataset}.tsv"
+#'   - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'   - results: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
+#'   - results_public: '`sm config["webDir"] + "/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'  output:
 #'   - wBhtml: "Output/html/AberrantExpression/Outrider/{annotation}/OutriderSummary_{dataset}.html"
 #'  type: noindex
@@ -43,8 +43,15 @@ plotEncDimSearch(ods)
 #' ### Aberrant samples
 plotAberrantPerSample(ods, main = snakemake@wildcards$dataset)
 
+suppressPackageStartupMessages({
+    library(OUTRIDER)
+    library(SummarizedExperiment)
+    library(ggplot2)
+    library(data.table)
+    library(dplyr)
+    devtools::load_all("../genetic-diagnosis-tools")
+})
 
-devtools::load_all("../OUTRIDER/")
 
 #' ### Batch correction
 #+ heatmap, fig.height=8, fig.width=8
