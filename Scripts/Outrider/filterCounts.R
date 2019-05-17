@@ -3,12 +3,12 @@
 #' author: Michaela Mueller
 #' wb:
 #'  input:
-#'   - counts: '`sm config["PROC_RESULTS"] + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
-#'   - txdb: '`sm config["PROC_RESULTS"] + "/{annotation}/txdb.db"`'
+#'   - counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
+#'   - txdb: '`sm lambda wildcards: parser.getGeneAnnotationFile(wildcards.annotation) `'    
 #'  output:
-#'   - ods: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
-#'   - plot: '`sm config["PROC_RESULTS"] + "/{annotation}/outrider/{dataset}/filtered_hist.png"`'
-#'   - filtered_counts: '`sm config["PROC_RESULTS"] + "/{annotation}/counts/{dataset}/filtered_counts.Rds"`'
+#'   - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'   - plot: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/filtered_hist.png"`'
+#'   - filtered_counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds"`'
 #'  type: script
 #'---
 
