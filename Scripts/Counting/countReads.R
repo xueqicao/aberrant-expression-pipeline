@@ -4,9 +4,9 @@
 #' wb:
 #'  input:
 #'   - sample_bam: '`sm standardFileNames("Data/helmholtz/{sampleID}/RNAout/paired-endout/stdFilenames/{sampleID}.bam")`'
-#'   - features: '`sm config["PROC_RESULTS"] + "/{annotation}/counts/exons_by_gene_op.Rds"`'
+#'   - features: '`sm config["COUNT_RANGES"]`'
 #'  output:
-#'   - counts: '`sm config["PROC_RESULTS"] + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
+#'   - counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
 #'---
 
@@ -20,7 +20,7 @@ suppressPackageStartupMessages({
 
 # import count settings from config
 anno <- snakemake@wildcards$annotation
-count_settings <- data.table(annotation = unlist(snakemake@config["ANNOTATIONS"]),
+count_settings <- data.table(annotation = unlist(snakemake@config["GENE_ANNOTATION_NAMES"]),
                              inter_feature = as.logical(unlist(snakemake@config["INTER_FEATURE"])))
 inter_feature <- count_settings[annotation == anno, inter_feature]
 
