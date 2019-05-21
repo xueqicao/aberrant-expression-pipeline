@@ -21,3 +21,6 @@ rule all:
     input: rules.Index.output, htmlOutputPath + "/readme.html"
     output: touch("Output/all.done")
 
+
+# test : snakemake -n /s/project/genetic_diagnosis/processed_results/mll/v29/counts/fib_ss/total_counts.Rds
+
