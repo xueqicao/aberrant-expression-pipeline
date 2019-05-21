@@ -48,7 +48,7 @@ res[, uniqueN(sampleID), by = STRANDED]
 #' ### Download results table
 write.table(res, snakemake@output[['results']], quote = F, row.names = F, sep = "\t")
 #write.table(res, "/s/public_webshare/project/genetic_diagnosis/results/OUTRIDER_results.tsv", sep = "\t", quote = F, row.names = F)
-write.table(res, paste(snakemake@config["webDir"],"/results/OUTRIDER_results.tsv"), sep = "\t", quote = F, row.names = F)
+write.table(res, paste0(snakemake@config["webDir"],"/results/OUTRIDER_results.tsv"), sep = "\t", quote = F, row.names = F)
 
 
 #' [Download OUTRIDER results table](https://i12g-gagneurweb.informatik.tu-muenchen.de/project/genetic_diagnosis/results/OUTRIDER_results.tsv)
@@ -64,8 +64,8 @@ ggplot(rd, aes(tp_sample)) + geom_bar(aes(y = ..count..)) + geom_text(aes(label 
 
 res[tp_sample == F,.(sampleID, KNOWN_MUTATION)]
 
-ods_ss <- readRDS(paste(snakemake@config["PROC_RESULTS"], "/", snakemake@config["PROJECT_NAME"] ,"/v29_overlap/outrider/fib_ss/ods.Rds"))
-ods_ns <- readRDS(paste(snakemake@config["PROC_RESULTS"], "/", snakemake@config["PROJECT_NAME"] ,"/v29_overlap/outrider/fib_ns/ods.Rds"))
+ods_ss <- readRDS(paste0(snakemake@config["PROC_RESULTS"], "/", snakemake@config["PROJECT_NAME"] ,"/v29_overlap/outrider/fib_ss/ods.Rds"))
+ods_ns <- readRDS(paste0(snakemake@config["PROC_RESULTS"], "/", snakemake@config["PROJECT_NAME"] ,"/v29_overlap/outrider/fib_ns/ods.Rds"))
 rs <- OUTRIDER::results(ods_ss, all = T)
 rs[, abs_z := abs(zScore)]
 rn <- OUTRIDER::results(ods_ns, all = T)
