@@ -23,4 +23,5 @@ rule all:
 
 
 # test : snakemake -n /s/project/genetic_diagnosis/processed_results/mll/v29/counts/fib_ss/total_counts.Rds
+#snakemake -n /s/project/genetic_diagnosis/processed_results/mll/v29/counts/leukemia/total_counts.Rds
 

@@ -3,7 +3,7 @@
 #' author: mumichae
 #' wb:
 #'  input:
-#'  - summaries: '`sm expand("Output/html/AberrantExpression/Outrider/{annotation}/OutriderSummary_{dataset}.html", annotation=config["GENE_ANNOTATION_NAMES"] , dataset=[*config["outrider_filtered"]])`'
+#'  - summaries: '`sm expand("Output/html/Outrider/{annotation}/OutriderSummary_{dataset}.html", annotation=config["GENE_ANNOTATION_NAMES"] , dataset=[*config["outrider_filtered"]])`'
 #' output:
 #'   html_document:
 #'    code_folding: hide
@@ -13,7 +13,7 @@
 saveRDS(snakemake, "tmp/outrider_overview.snakemake")
 # snakemake <- readRDS("tmp/outrider_overview.snakemake")
 
-summarie_titles <- paste(snakemake@config$ANNOTATIONS, names(snakemake@config$outrider_filtered))
+summarie_titles <- paste(snakemake@config$GENE_ANNOTATION_NAMES, names(snakemake@config$outrider_filtered))
 summaries <- paste('[', summarie_titles ,'](', gsub(snakemake@config$htmlOutputPath, ".", snakemake@input$summaries), ')', sep = '')
 summaries <- paste(summaries, sep = '\n')
 #' Summaries: `r summaries`
