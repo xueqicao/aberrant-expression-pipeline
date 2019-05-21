@@ -3,12 +3,14 @@
 #' author: Michaela Mueller
 #' wb:
 #'  input:
-#'   - sample_bam: '`sm standardFileNames("Data/helmholtz/{sampleID}/RNAout/paired-endout/stdFilenames/{sampleID}.bam")`'
+#'   - sample_bam: '`sm parser.getFilePath(sampleId={sampleID}, assay=config["rna_assay"]) `'
 #'   - features: '`sm lambda wildcards: parser.getCountRangesFile(wildcards.annotation) `'
 #'  output:
 #'   - counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
 #'---
+
+# #'   - sample_bam: '`sm standardFileNames("Data/helmholtz/{sampleID}/RNAout/paired-endout/stdFilenames/{sampleID}.bam")`'
 
 #source(".wBuild/wBuildParser.R")
 #parseWBHeader("Scripts/counting/countReads.R")
