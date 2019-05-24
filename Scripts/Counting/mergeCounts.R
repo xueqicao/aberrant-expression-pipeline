@@ -51,17 +51,11 @@ row_data <- left_join(row_data, gene_annot_dt[,.(gene_id_unique, gene_name_uniqu
 rowData(total_counts) <- row_data
 
 # Add sample annotation data (colData)
-sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
-col_data <- data.table(RNA_ID = colnames(total_counts))
-# TODO: add age
-col_data <- left_join(col_data, unique(sample_anno[, .(RNA_ID, GENDER, BATCH, TISSUE, GROWTH_MEDIUM)]), by = 'RNA_ID')
 
-dups <- duplicated(col_data$RNA_ID)
-if(sum(dups) > 0) {
-    message(paste('duplicate sample annotation entry for', col_data[which(dups),], collapse = '\n'))
-    col_data <- col_data[which(!dups),]
-    message('took first line per duplicate')
-}
+col_data <- data.table(RNA_ID = colnames(total_counts))
+# Removed adding sample_anno info. Do this later in the Analysis script when needed
+# sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
+# col_data <- left_join(col_data, unique(sample_anno[, .(RNA_ID, GENDER, BATCH, TISSUE, GROWTH_MEDIUM)]), by = snakemake@config$rna_assay)
 
 setnames(col_data, 'RNA_ID', 'sampleID')
 colData(total_counts) <- DataFrame(col_data, row.names = col_data$sampleID)

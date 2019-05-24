@@ -25,19 +25,15 @@ suppressPackageStartupMessages({
 
 # import count settings from config
 anno <- snakemake@wildcards$annotation
-count_settings <- data.table(annotation = unlist(snakemake@config["GENE_ANNOTATION_NAMES"]),
-                             inter_feature = as.logical(unlist(snakemake@config["INTER_FEATURE"])))
-inter_feature <- count_settings[annotation == anno, inter_feature]
 
 # import sample annotation
 sampleID <- snakemake@wildcards$sampleID
 sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
 # Get strand specific information from sample annotation
 
-print(sample_anno, nrow=5)
-#strand_spec <- sample_anno[RNA_ID == sampleID, COUNT_STRAND_SPECIFIC] 
-#### CHANGED RNA_ID to RNA_seq
-strand_spec <- sample_anno[RNA_seq == sampleID, COUNT_AS_STRANDED] 
+rna_assay <- snakemake@config$rna_assay
+strand_spec <- sample_anno[get(rna_assay) == sampleID, get(snakemake@config$strand_column)]
+inter_feature <- sample_anno[get(rna_assay) == sampleID, get(snakemake@config$inter_feature_column)]
 
 # show info
 message(paste("input:", snakemake@input$features))

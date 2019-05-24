@@ -4,7 +4,7 @@
 #' wb:
 #'  input:
 #'   - counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
-#'   - txdb: '`sm lambda wildcards: parser.getGeneAnnotationFile(wildcards.annotation) `'    
+#'   - txdb: '`sm parser.getProcDataDir() + "/{annotation}/txdb.db"`'
 #'  output:
 #'   - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
 #'   - plot: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/filtered_hist.png"`'
@@ -12,23 +12,31 @@
 #'  type: script
 #'---
 
+saveRDS(snakemake, "tmp/filter_counts.snakemake")
+# snakemake <- readRDS("tmp/filter_counts.snakemake")
 suppressPackageStartupMessages({
     library(OUTRIDER)
+    library(GenomicFeatures)
     library(SummarizedExperiment)
     library(ggplot2)
     library(data.table)
     library(dplyr)
 })
 
-saveRDS(snakemake, "tmp/filter_counts.snakemake")
-# snakemake <- readRDS("tmp/filter_counts.snakemake")
 counts <- readRDS(snakemake@input$counts)
 ods <- OutriderDataSet(counts)
 
+# remove duplicates, as this will break OUTRIDER
+ids <- colData(counts)$sampleID
+dups <- duplicated(ids)
+if(sum(dups) > 0) {
+  message(paste('duplicate sample annotation entry for', ids[which(dups)], collapse = '\n'))
+  counts <- counts[, ids[which(!dups)]]
+  message('took first line per duplicate')
+}
+
 # filter not expressed genes
-gencode_txdb <- loadDb(snakemake@input$txdb)
-seqlevelsStyle(gencode_txdb) <- "UCSC"
-gencode_txdb <- keepStandardChromosomes(gencode_txdb)
+txdb <- loadDb(snakemake@input$txdb)
 
 ods <- filterExpression(ods, gtfFile=gencode_txdb, filter=FALSE, fpkmCutoff=snakemake@config$fpkmCutoff)
 g <- plotFPKM(ods) + theme_bw(base_size = 14)

@@ -8,3 +8,4 @@
 # wBuild temporary files
 .snakemake*
 .wBuild*
+tmp*

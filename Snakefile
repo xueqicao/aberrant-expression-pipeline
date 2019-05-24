@@ -25,3 +25,8 @@ rule all:
 # test : snakemake -n /s/project/genetic_diagnosis/processed_results/mll/v29/counts/fib_ss/total_counts.Rds
 #snakemake -n /s/project/genetic_diagnosis/processed_results/mll/v29/counts/leukemia/total_counts.Rds
 
+rule count:
+    input: expand(parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/total_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+
+rule filter_counts:
+    input: expand(parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
