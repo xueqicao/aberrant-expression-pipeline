@@ -38,7 +38,7 @@ if(sum(dups) > 0) {
 # filter not expressed genes
 txdb <- loadDb(snakemake@input$txdb)
 
-ods <- filterExpression(ods, gtfFile=gencode_txdb, filter=FALSE, fpkmCutoff=snakemake@config$fpkmCutoff)
+ods <- filterExpression(ods, gtfFile=txdb, filter=FALSE, fpkmCutoff=snakemake@config$fpkmCutoff)
 g <- plotFPKM(ods) + theme_bw(base_size = 14)
 ggsave(snakemake@output$plot, g)
 

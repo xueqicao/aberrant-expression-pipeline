@@ -16,8 +16,10 @@ suppressPackageStartupMessages({
   library(GenomicFeatures)
 })
 
-gencode_txdb <- makeTxDbFromGFF(snakemake@input$gtf)
-seqlevelsStyle(gencode_txdb) <- snakemake@config$CHROMOSOME_FORMAT
+txdb <- makeTxDbFromGFF(snakemake@input$gtf)
+seqlevelsStyle(txdb) <- snakemake@config$CHROMOSOME_FORMAT
 txdb <- keepStandardChromosomes(txdb)
 
-saveDb(txdb, snakemake@output$txdb)
+tmpFile <- tempfile()
+saveDb(txdb, tmpFile)
+R.utils::copyFile(tmpFile, snakemake@output$txdb, overwrite=TRUE)
