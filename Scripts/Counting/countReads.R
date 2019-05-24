@@ -33,7 +33,11 @@ inter_feature <- count_settings[annotation == anno, inter_feature]
 sampleID <- snakemake@wildcards$sampleID
 sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
 # Get strand specific information from sample annotation
-strand_spec <- sample_anno[RNA_ID == sampleID, COUNT_STRAND_SPECIFIC]
+
+print(sample_anno, nrow=5)
+#strand_spec <- sample_anno[RNA_ID == sampleID, COUNT_STRAND_SPECIFIC] 
+#### CHANGED RNA_ID to RNA_seq
+strand_spec <- sample_anno[RNA_seq == sampleID, COUNT_AS_STRANDED] 
 
 # show info
 message(paste("input:", snakemake@input$features))
