@@ -6,7 +6,7 @@
 #'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, "rna_assay") `'
 #'   - features: '`sm lambda wildcards: parser.getCountRangesFile(wildcards.annotation) `'
 #'  output:
-#'   - counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
+#'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
 #'---
 

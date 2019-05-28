@@ -3,10 +3,10 @@
 #' author: Michaela Muller
 #' wb:
 #'  input: 
-#'    - counts: '`sm lambda wildcards: parser.getCountFileByOutriderGroup(wildcards.dataset)`'
+#'    - counts: '`sm lambda wildcards: parser.getCountFileByOutriderGroup(wildcards.annotation, wildcards.dataset)`'
 #'    - gene_annot_dt: '`sm lambda wildcards: parser.getGeneInfoFile(wildcards.annotation) `'
 #'  output:
-#'    - counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
+#'    - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
 #'  threads: 30
 #'  type: script
 #'---
