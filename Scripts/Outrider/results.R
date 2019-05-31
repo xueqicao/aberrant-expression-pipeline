@@ -24,9 +24,6 @@ suppressPackageStartupMessages({
     devtools::load_all("../genetic-diagnosis-tools")
 })
 
-# Removed - functions: "Scripts/_functions/gene_annotation/add_gene_info_cols.R"
-#source(snakemake@input$functions)
-
 ods <- readRDS(snakemake@input$ods)
 res <- OUTRIDER::results(ods, all = TRUE)
 res[, FC := round(2^l2fc, 2)]
@@ -37,15 +34,6 @@ saveRDS(res[,.(geneID, sampleID, pValue, padjust, zScore, l2fc, rawcounts, normc
 # Subset to significant results
 res <- res[padjust <= .05]
 res <- add_all_gene_info(res, gene_name_col = 'geneID', dis_genes = F, gene_type = F)  # gene_type already added before
-
-# Add sample annotation
-sa <- fread(snakemake@config$SAMPLE_ANNOTATION)
-res <- left_join(res, sa[, .(RNA_ID, FIBROBLAST_ID, EXOME_ID, PEDIGREE, KNOWN_MUTATION,
-                             CANDIDATE_GENE, BATCH, COMMENT, PROTEOME_ID, DISEASE, RNA_PERSON)],
-                 by = c("sampleID" = "RNA_ID")) %>% as.data.table
-
-res[, tp_sample := as.character(any(geneID == KNOWN_MUTATION)), by = sampleID]
-res[is.na(KNOWN_MUTATION), tp_sample := "Unsolved"]
 
 # Save results 
 fwrite(res, snakemake@output$results, sep = "\t", quote = F)

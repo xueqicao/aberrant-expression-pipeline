@@ -1,0 +1,20 @@
+#'---
+#' title: Results Overview
+#' author: mumichae
+#' wb:
+#'  input:
+#'  - summaries: '`sm expand(config["htmlOutputPath"] + "/Outrider/{annotation}/Summary_{dataset}.html", annotation=config["GENE_ANNOTATION_NAMES"] , dataset=parser.outrider_filtered)`'
+#' output:
+#'   html_document:
+#'    code_folding: hide
+#'    code_download: TRUE
+#'---
+
+saveRDS(snakemake, "tmp/outrider_overview.snakemake")
+# snakemake <- readRDS("tmp/outrider_overview.snakemake")
+
+groups <- names(snakemake@config$outrider_filtered)
+summaries_titles <- paste(snakemake@config$GENE_ANNOTATION_NAMES, groups)
+summaries <- paste('[', summaries_titles ,'](', gsub(snakemake@config$htmlOutputPath, ".", snakemake@input$summaries), ')', sep = '')
+summaries <- paste(summaries, sep = '\n')
+#' Summaries: `r summaries`
