@@ -3,7 +3,7 @@
 #' author: Daniela Andrade, Michaela Muller
 #' wb:
 #'  input: 
-#'    - counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
+#'    - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
 #'    - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
 #'  output:
 #'   - wBhtml: "Output/html/Counting/{annotation}/CountingSummary_{dataset}.html"
