@@ -3,12 +3,12 @@
 #' author: Michaela Mueller
 #' wb:
 #'  input:
-#'   - counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
+#'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
 #'   - txdb: '`sm parser.getProcDataDir() + "/{annotation}/txdb.db"`'
 #'  output:
 #'   - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
-#'   - plot: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/filtered_hist.png"`'
-#'   - filtered_counts: '`sm parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds"`'
+#'   - plot: '`sm parser.getProcDataDir() + "/{annotation}/outrider/{dataset}/filtered_hist.png"`'
+#'   - filtered_counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds"`'
 #'  type: script
 #'---
 

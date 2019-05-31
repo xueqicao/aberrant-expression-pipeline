@@ -26,13 +26,18 @@ rule all:
 #snakemake -n /s/project/genetic_diagnosis/processed_results/mll/v29/counts/leukemia/total_counts.Rds
 
 rule count:
-    input: expand(parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/total_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+    input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
 
 rule filter_counts:
-    input: expand(parser.getProcResultsDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+    input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
 
 rule outrider:
     input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
 
+<<<<<<< HEAD
 rule summary:
     input: expand("Output/html/Counting/{annotation}/CountingSummary_{dataset}.html", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+=======
+rule outrider_results:
+    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+>>>>>>> 25be57d03e9ab956af1a568cd7f6df8f92a74e86

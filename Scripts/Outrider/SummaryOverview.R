@@ -4,6 +4,9 @@
 #' wb:
 #'  input:
 #'  - summaries: '`sm expand("Output/html/Outrider/{annotation}/OutriderSummary_{dataset}.html", annotation=config["GENE_ANNOTATION_NAMES"] , dataset=[*config["outrider_filtered"]])`'
+#'  threads: 15
+#'  params:
+#'   - memory: "40G"
 #' output:
 #'   html_document:
 #'    code_folding: hide
