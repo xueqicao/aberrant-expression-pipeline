@@ -39,3 +39,7 @@ rule counting_results:
 
 rule outrider_results:
     input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+    
+# overwriting wbuild rule output
+rule rulegraph:
+    shell: "snakemake --rulegraph | dot -Tsvg -Grankdir=TB > {config[htmlOutputPath]}/dep.svg"
