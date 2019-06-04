@@ -32,11 +32,10 @@ rule filter_counts:
     input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
 
 rule outrider:
-    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_filtered)
 
 rule counting_results:
     input: expand("Output/html/Counting/{annotation}/CountingSummary_{dataset}.html", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
 
 rule outrider_results:
     input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
-
