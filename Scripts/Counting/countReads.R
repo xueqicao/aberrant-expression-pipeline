@@ -10,59 +10,57 @@
 #'  type: script
 #'---
 
-# #'   - sample_bam: '`sm standardFileNames("Data/helmholtz/{sampleID}/RNAout/paired-endout/stdFilenames/{sampleID}.bam")`'
-# #'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID,config["rna_assay"]) `'
-
-
-
-#source(".wBuild/wBuildParser.R")
-#parseWBHeader("Scripts/counting/countReads.R")
 saveRDS(snakemake, "tmp/counts.snakemake")
 # snakemake <- readRDS("tmp/counts.snakemake")
 suppressPackageStartupMessages({
-    library(data.table)
+  library(data.table)
+  library(Rsamtools)
+  library(BiocParallel)
+  library(GenomicAlignments)
 })
 
-# import count settings from config
-anno <- snakemake@wildcards$annotation
-
-# import sample annotation
+# Get strand specific information from sample annotation
 sampleID <- snakemake@wildcards$sampleID
 sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
-# Get strand specific information from sample annotation
+sample_anno <- sample_anno[get(snakemake@config$rna_assay) == sampleID]
 
-rna_assay <- snakemake@config$rna_assay
-strand_spec <- sample_anno[get(rna_assay) == sampleID, get(snakemake@config$strand_column)]
-inter_feature <- sample_anno[get(rna_assay) == sampleID, get(snakemake@config$inter_feature_column)]
+count_mode <- sample_anno[, get(snakemake@config$count_mode_column)]
+paired_end <- sample_anno[, get(snakemake@config$paired_end_column)]
+strand_spec <- sample_anno[, get(snakemake@config$strand_column)]
+inter_feature <- sample_anno[, get(snakemake@config$inter_feature_column)]
+
+# read files
+bam_file <- BamFile(snakemake@input$sample_bam, yieldSize = 2e6)
+feature_regions <- readRDS(snakemake@input$features)
+#seqlevels(feature_regions) <- "22" # subset for testing
 
 # show info
 message(paste("input:", snakemake@input$features))
 message(paste("output:", snakemake@output$counts))
-message(paste('\tinter.feature:', inter_feature, sep = "\t"))
+message(paste('\tcount mode:', count_mode, sep = "\t"))
+message(paste('\tpaired end:', paired_end, sep = "\t"))
 message(paste('\tstrand specific:', strand_spec, sep = "\t"))
-
-
-# read files
-bam_file <- Rsamtools::BamFile(snakemake@input$sample_bam, yieldSize = 2e6)
-feature_regions <- readRDS(snakemake@input$features)
+message(paste('\tinter.feature:', inter_feature, sep = "\t"))
+message(paste(seqlevels(feature_regions), collapse = ' '))
 
 # start counting
 message("counting")
 starttime <- Sys.time()
-se <- GenomicAlignments::summarizeOverlaps(
+se <- summarizeOverlaps(
     feature_regions
     , bam_file
-    , mode = 'IntersectionStrict'
-    , singleEnd = F
+    , mode = count_mode
+    , singleEnd = !paired_end
     , ignore.strand = !strand_spec  # FALSE if done strand specifically
     , fragments = F
     , count.mapped.reads = T
     , inter.feature = inter_feature # TRUE, reads mapping to multiple features are dropped
+    , BPPARAM = MulticoreParam(10)
 )
 saveRDS(se, snakemake@output$counts)
 message("done")
 
 print(format(Sys.time()- starttime)) # time taken
-print(sum(SummarizedExperiment::assay(se))) # total counts
+print(sum(assay(se))) # total counts
 
 

@@ -10,3 +10,4 @@
 .wBuild*
 tmp*
 Output*
+slurm-*.out
