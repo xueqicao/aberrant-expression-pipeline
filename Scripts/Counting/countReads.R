@@ -32,8 +32,14 @@ sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
 # Get strand specific information from sample annotation
 
 rna_assay <- snakemake@config$rna_assay
-strand_spec <- sample_anno[get(rna_assay) == sampleID, get(snakemake@config$strand_column)]
-inter_feature <- sample_anno[get(rna_assay) == sampleID, get(snakemake@config$inter_feature_column)]
+strand_spec <- FALSE
+if(!is.null(snakemake@config$strand_column) && snakemake@config$strand_column %in% colnames(sample_anno)){
+    strand_spec <- sample_anno[get(rna_assay) == sampleID, get(snakemake@config$strand_column)]
+}
+inter_feature <- FALSE
+if(!is.null(snakemake@config$inter_feature_column) && snakemake@config$inter_feature_column %in% colnames(sample_anno)){
+    inter_feature <- sample_anno[get(rna_assay) == sampleID, get(snakemake@config$inter_feature_column)]
+}
 
 # show info
 message(paste("input:", snakemake@input$features))
