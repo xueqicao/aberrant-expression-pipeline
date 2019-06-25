@@ -24,9 +24,6 @@ rule all:
     output: touch(htmlOutputPath + "/../all.done")
 
 
-# test : snakemake -n /s/project/genetic_diagnosis/processed_results/mll/v29/counts/fib_ss/total_counts.Rds
-#snakemake -n /s/project/genetic_diagnosis/processed_results/mll/v29/counts/leukemia/total_counts.Rds
-
 rule count:
     input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
 
@@ -41,7 +38,8 @@ rule counting_results:
 
 rule outrider_results:
     input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
-    
+
+
 # overwriting wbuild rule output
 rule rulegraph:
     shell: "snakemake --rulegraph | dot -Tsvg -Grankdir=TB > {config[htmlOutputPath]}/dep.svg"
