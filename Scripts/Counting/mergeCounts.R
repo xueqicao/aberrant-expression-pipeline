@@ -30,8 +30,9 @@ message(paste("read", length(counts_list), 'files'))
 
 # merge counts
 ## more efficient merging matrices instead of complete SE
-merged_assays <- do.call(cbind, bplapply(counts_list, assay, withDimnames = F))
-total_counts <- SummarizedExperiment(assays = list(counts = merged_assays))
+merged_assays <- do.call(cbind, lapply(counts_list, assay, withDimnames=FALSE))
+total_counts <- SummarizedExperiment(assays=list(counts=merged_assays))
+
 # total_counts <- do.call(cbind, counts_list)
 colnames(total_counts) <- names(counts_list)
 rownames(total_counts) <- rownames(counts_list[[1]])
