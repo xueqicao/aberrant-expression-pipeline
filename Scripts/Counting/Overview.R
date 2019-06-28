@@ -3,7 +3,7 @@
 #' author: Michaela Muller
 #' wb:
 #'  input: 
-#'  - summaries: '`sm expand(config["htmlOutputPath"] + "/Counting/{annotation}/Summary_{dataset}.html", annotation=config["GENE_ANNOTATION"], dataset=parser.outrider_filtered)`'
+#'  - summaries: '`sm expand(config["htmlOutputPath"] + "/Counting/{annotation}/Summary_{dataset}.html", annotation=config["GENE_ANNOTATION"].keys(), dataset=parser.outrider_filtered)`'
 #' output:
 #'   html_document:
 #'    code_folding: hide
