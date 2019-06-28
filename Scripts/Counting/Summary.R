@@ -4,7 +4,7 @@
 #' wb:
 #'  input: 
 #'    - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
-#'    - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'    - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
 #'  output:
 #'   - wBhtml: '`sm config["htmlOutputPath"] + "/Counting/{annotation}/Summary_{dataset}.html"`'
 #'  type: noindex
@@ -30,34 +30,30 @@ suppressPackageStartupMessages({
 })
 
 
-#' ## Read counts object
 counts_obj <- readRDS(snakemake@input$counts)
-class(counts_obj)
-dim(counts_obj)
-colnames(counts_obj)
-
-#' ## Read filtered counts object
 ods <- readRDS(snakemake@input$ods)
-class(ods)
-dim(ods)
-colnames(ods)
 
 #' # Counting Results
 #+ plotheatmap, fig.height=8, fig.width=8
 plotCountCorHeatmap(ods, main = "Raw Counts Correlation", normalized = F)
-plotCountCorHeatmap(ods, main = "Normalised Counts Correlation")
 
-#+ globalqq
-plotQQ(ods, global = T)
+#' ## Filtering
+# TODO: number reads counted, histogram(colSums(ods)) (before and after filtering)
 
-feature_dt <- data.table(gene_id = rownames(counts_obj), meanCounts = rowMeans(assay(counts_obj)))
+# # of covered genes per sample before and after filtering. 
+# Define covered genes using 2 cutoffs: FPKM>1 and raw_counts > 10. 
+# Then make a histogram (before and after filtering) overlapping the distributions.
+hist(colSums(fpkm(ods)>1))
+hist(colSums(counts(ods, normalized = F)>1))
+hist(colSums(counts(ods, normalized = F)>10))
 
 #' # Count Statistics
+feature_dt <- data.table(gene_id = rownames(counts_obj), meanCounts = rowMeans(assay(counts_obj)))
 #' ## Mean Count Distribution
 #' The following plots are based on mean counts over all samples.  
 
 dist_hist <- ggplot(feature_dt, aes(x = meanCounts, y = stat(count))) +
-  geom_density() +
+  geom_histogram() + #geom_density() +
   scale_x_log10() +
   labs(x = "Mean Counts", y = "Frequency") +
   guides(col = guide_legend(title = NULL)) +
