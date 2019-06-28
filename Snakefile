@@ -5,6 +5,8 @@ import os
 sys.path.insert(0,'../genetic_diagnosis_modified/src/python') 
 from config_helper import ConfigHelper
 
+configfile: "wbuild.yaml" 
+
 parser = ConfigHelper(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
 
@@ -22,6 +24,7 @@ include: os.getcwd() + "/.wBuild/wBuild.snakefile"  # Has to be here in order to
 rule all:
     input: rules.Index.output, htmlOutputPath + "/readme.html"
     output: touch(htmlOutputPath + "/../all.done")
+
 
 rule count:
     input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
