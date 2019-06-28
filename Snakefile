@@ -23,21 +23,22 @@ rule all:
     input: rules.Index.output, htmlOutputPath + "/readme.html"
     output: touch(htmlOutputPath + "/../all.done")
 
+print(list(config["GENE_ANNOTATION"].keys()))
 
 rule count:
-    input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+    input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
 
 rule filter_counts:
-    input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+    input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
 
 rule outrider:
-    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_filtered)
+    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
 
 rule counting_results:
-    input: expand("Output/html/Counting/{annotation}/CountingSummary_{dataset}.html", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+    input: expand("Output/html/Counting/{annotation}/CountingSummary_{dataset}.html", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
 
 rule outrider_results:
-    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=config["GENE_ANNOTATION_NAMES"], dataset=parser.outrider_all)
+    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
 
 
 # overwriting wbuild rule output
