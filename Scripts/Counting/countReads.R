@@ -37,7 +37,6 @@ if (preprocess_reads == "NULL") {
 # read files
 bam_file <- BamFile(snakemake@input$sample_bam, yieldSize = 2e6)
 feature_regions <- readRDS(snakemake@input$features)
-#seqlevels(feature_regions) <- "22" # subset for testing
 
 # show info
 message(paste("input:", snakemake@input$features))
