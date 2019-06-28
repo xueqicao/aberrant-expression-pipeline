@@ -8,7 +8,7 @@
 #'  output:
 #'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
-#'  threads: 10
+#'  threads: 5
 #'---
 
 saveRDS(snakemake, "tmp/counts.snakemake")
