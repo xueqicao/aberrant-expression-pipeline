@@ -1,6 +1,6 @@
 #'---
-#' title: Filter Counts for OUTRIDER
-#' author: Michaela Mueller
+#' title: Create txdb from GTF
+#' author: mumichae
 #' wb:
 #'  input:
 #'   - gtf: '`sm lambda wildcards: parser.getGeneAnnotationFile(wildcards.annotation) `'

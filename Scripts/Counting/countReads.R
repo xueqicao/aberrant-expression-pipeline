@@ -4,11 +4,11 @@
 #' wb:
 #'  input:
 #'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, "rna_assay") `'
-#'   - features: '`sm lambda wildcards: parser.getCountRangesFile(wildcards.annotation) `'
+#'   - features: '`sm parser.getProcDataDir() + "/{annotation}/count_ranges.Rds"`'
 #'  output:
 #'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
-#'  threads: 5
+#'  threads: 10
 #'---
 
 saveRDS(snakemake, "tmp/counts.snakemake")

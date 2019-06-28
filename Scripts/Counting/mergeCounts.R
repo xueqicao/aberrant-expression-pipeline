@@ -4,7 +4,7 @@
 #' wb:
 #'  input: 
 #'    - counts: '`sm lambda wildcards: parser.getCountFileByOutriderGroup(wildcards.annotation, wildcards.dataset)`'
-#'    - gene_annot_dt: '`sm lambda wildcards: parser.getGeneInfoFile(wildcards.annotation) `'
+#'    - gene_name_mapping: '`sm parser.getProcDataDir() + "/{annotation}/gene_name_mapping.Rds"`'
 #'  output:
 #'    - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
 #'  threads: 30
@@ -39,10 +39,10 @@ rownames(total_counts) <- rownames(counts_list[[1]])
 rowRanges(total_counts) <- rowRanges(counts_list[[1]])
 
 # Add gene annotation data (rowData)
-gene_annot_dt <- fread(snakemake@input$gene_annot_dt)
-row_data <- data.table(gene_id_unique = rownames(total_counts))
-row_data <- left_join(row_data, gene_annot_dt[,.(gene_id_unique, gene_name_unique, gene_type, gene_status)], by = "gene_id_unique")
-rowData(total_counts) <- row_data
+gene_annot_dt <- fread(snakemake@input$gene_name_mapping)
+row_data <- data.table(gene_id = names(count_object))
+row_data <- left_join(row_data, gene_annot_dt[,.(gene_id, gene_name)], by = "gene_id")
+rowData(count_object) <- row_data
 
 # Add sample annotation data (colData)
 

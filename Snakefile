@@ -23,8 +23,6 @@ rule all:
     input: rules.Index.output, htmlOutputPath + "/readme.html"
     output: touch(htmlOutputPath + "/../all.done")
 
-print(list(config["GENE_ANNOTATION"].keys()))
-
 rule count:
     input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
 
