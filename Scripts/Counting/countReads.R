@@ -8,6 +8,7 @@
 #'  output:
 #'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
+#'  threads: 5
 #'---
 
 saveRDS(snakemake, "tmp/counts.snakemake")
@@ -28,6 +29,10 @@ count_mode <- sample_anno[, get(snakemake@config$count_mode_column)]
 paired_end <- sample_anno[, get(snakemake@config$paired_end_column)]
 strand_spec <- sample_anno[, get(snakemake@config$strand_column)]
 inter_feature <- sample_anno[, get(snakemake@config$inter_feature_column)]
+preprocess_reads <- sample_anno[, get(snakemake@config$strand_type_column)]
+if (preprocess_reads == "NULL") {
+  preprocess_reads <- NULL
+}
 
 # read files
 bam_file <- BamFile(snakemake@input$sample_bam, yieldSize = 2e6)
@@ -41,6 +46,7 @@ message(paste('\tcount mode:', count_mode, sep = "\t"))
 message(paste('\tpaired end:', paired_end, sep = "\t"))
 message(paste('\tstrand specific:', strand_spec, sep = "\t"))
 message(paste('\tinter.feature:', inter_feature, sep = "\t"))
+message(paste('\tpreprocess.reads:', preprocess_reads, sep = "\t"))
 message(paste(seqlevels(feature_regions), collapse = ' '))
 
 # start counting
@@ -55,7 +61,8 @@ se <- summarizeOverlaps(
     , fragments = F
     , count.mapped.reads = T
     , inter.feature = inter_feature # TRUE, reads mapping to multiple features are dropped
-    , BPPARAM = MulticoreParam(10)
+    , preprocess.reads = get(preprocess_reads)
+    , BPPARAM = MulticoreParam(snakemake@threads)
 )
 saveRDS(se, snakemake@output$counts)
 message("done")
