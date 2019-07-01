@@ -1,3 +1,4 @@
+## SNAKEFILE
 import sys
 import os
 
