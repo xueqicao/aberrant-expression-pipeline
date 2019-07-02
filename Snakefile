@@ -10,9 +10,18 @@ config = parser.config # needed if you dont provide the wbuild.yaml as configfil
 htmlOutputPath = config["htmlOutputPath"] if (config["htmlOutputPath"] != None) else "Output/html"
 
 # Only needed for Aberrant Expression: Outrider
-outrider_all_ids, outrider_filtered = parser.getOutriderIds()
-config["outrider"] = outrider_all_ids
-config["outrider_filtered"] = outrider_filtered
+#outrider_all_ids, outrider_filtered = parser.getOutriderIds()
+#config["outrider"] = outrider_all_ids
+#config["outrider_filtered"] = outrider_filtered
+
+######## test
+#print(outrider_filtered)
+#print(parser.outrider_filtered)
+#print(parser.getOutriderIds())
+#import pandas as pd
+#print(parser.getSampleIDs("RNA_ID"))
+#print(parser.sample_file_mapping)
+
 
 include: os.getcwd() + "/.wBuild/wBuild.snakefile"  # Has to be here in order to update the config with the new variables
 
