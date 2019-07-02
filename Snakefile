@@ -3,7 +3,7 @@ import sys
 import os
 
 # Add the folder path for the python parsing functions to the sys.path list
-sys.path.insert(0,'../genetic_diagnosis_modified/src/python') 
+sys.path.insert(0,'../../src/python') 
 from config_helper import ConfigHelper
 
 
@@ -36,7 +36,7 @@ rule outrider:
     input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
 
 rule counting_results:
-    input: expand("Output/html/Counting/{annotation}/CountingSummary_{dataset}.html", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
+    input: expand(htmlOutputPath + "/Counting/{annotation}/CountingSummary_{dataset}.html", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
 
 rule outrider_results:
     input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
