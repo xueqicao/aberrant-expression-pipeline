@@ -1,6 +1,5 @@
 ### SNAKEFILE ABERRANT EXPRESSION
-#import sys
-#import os
+import os
 
 # Add the folder path for the python parsing functions to the sys.path list
 from config_parser import ConfigHelper
@@ -15,7 +14,7 @@ outrider_all_ids, outrider_filtered = parser.getOutriderIds()
 config["outrider"] = outrider_all_ids
 config["outrider_filtered"] = outrider_filtered
 
-include: "/.wBuild/wBuild.snakefile"  # Has to be here in order to update the config with the new variables
+include: os.getcwd() + "/.wBuild/wBuild.snakefile"  # Has to be here in order to update the config with the new variables
 
 
 rule all:
