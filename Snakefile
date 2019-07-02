@@ -1,6 +1,6 @@
 ### SNAKEFILE ABERRANT EXPRESSION
-import sys
-import os
+#import sys
+#import os
 
 # Add the folder path for the python parsing functions to the sys.path list
 from config_parser import ConfigHelper
@@ -8,15 +8,14 @@ from config_parser import ConfigHelper
 parser = ConfigHelper(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
 
-htmlOutputPath = config["htmlOutputPath"]
+htmlOutputPath = config["htmlOutputPath"] if (config["htmlOutputPath"] != None) else "Output/html"
 
 # Only needed for Aberrant Expression: Outrider
-
 outrider_all_ids, outrider_filtered = parser.getOutriderIds()
 config["outrider"] = outrider_all_ids
 config["outrider_filtered"] = outrider_filtered
 
-include: os.getcwd() + "/.wBuild/wBuild.snakefile"  # Has to be here in order to update the config with the new variables
+include: "/.wBuild/wBuild.snakefile"  # Has to be here in order to update the config with the new variables
 
 
 rule all:
