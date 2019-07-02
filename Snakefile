@@ -3,9 +3,7 @@ import sys
 import os
 
 # Add the folder path for the python parsing functions to the sys.path list
-sys.path.insert(0,'../genetic_diagnosis_modified/src/python') 
-from config_helper import ConfigHelper
-
+from config_parser import ConfigHelper
 
 parser = ConfigHelper(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
