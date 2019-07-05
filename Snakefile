@@ -12,9 +12,9 @@ if not os.path.exists('tmp'):
     os.makedirs('tmp')
 
 # OUTRIDER IDs
-outrider_all_ids, outrider_filtered = parser.getOutriderIds()
-config["outrider"] = outrider_all_ids
-config["outrider_filtered"] = outrider_filtered
+#outrider_all_ids, outrider_filtered = parser.getOutriderIds()
+#config["outrider"] = outrider_all_ids
+#config["outrider_filtered"] = outrider_filtered
 
 rule all:
     input: rules.Index.output, htmlOutputPath + "/readme.html"
