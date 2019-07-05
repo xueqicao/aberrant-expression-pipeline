@@ -12,7 +12,7 @@
 #'---
 
 saveRDS(snakemake, "tmp/count_all.snakemake")
-# snakemake <- readRDS("tmp/count_all.snakemake")
+# snakemake <- readRDS("submodules/aberrant-expression-pipeline/tmp/count_all.snakemake")
 
 suppressPackageStartupMessages({
     library(BiocParallel)
@@ -40,18 +40,18 @@ rowRanges(total_counts) <- rowRanges(counts_list[[1]])
 
 # Add gene annotation data (rowData)
 gene_annot_dt <- fread(snakemake@input$gene_name_mapping)
-row_data <- data.table(gene_id = names(count_object))
-row_data <- left_join(row_data, gene_annot_dt[,.(gene_id, gene_name)], by = "gene_id")
-rowData(count_object) <- row_data
+row_data <- data.table(gene_id = names(total_counts))
+row_data <- left_join(row_data, gene_annot_dt[,.(gene_id, gene_name, gene_name_orig, gene_type)], by = "gene_id")
+rownames(row_data) <- rownames(total_counts) <- row_data$gene_name
+rowData(total_counts) <- row_data
+ 
 
 # Add sample annotation data (colData)
-
-col_data <- data.table(RNA_ID = colnames(total_counts))
-# Removed adding sample_anno info. Do this later in the Analysis script when needed
-# sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
-# col_data <- left_join(col_data, unique(sample_anno[, .(RNA_ID, GENDER, BATCH, TISSUE, GROWTH_MEDIUM)]), by = snakemake@config$rna_assay)
-
-setnames(col_data, 'RNA_ID', 'sampleID')
-colData(total_counts) <- DataFrame(col_data, row.names = col_data$sampleID)
+sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
+col_data <- data.table(colnames(total_counts))
+names(col_data) = snakemake@config$rna_assay
+col_data <- left_join(col_data, sample_anno, by = snakemake@config$rna_assay)
+rownames(col_data) <- col_data[,1]
+colData(total_counts) <- as(col_data, "DataFrame")
 
 saveRDS(total_counts, snakemake@output$counts)

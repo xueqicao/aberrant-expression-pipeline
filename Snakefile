@@ -1,23 +1,21 @@
 ### SNAKEFILE ABERRANT EXPRESSION
-import sys
-import os
 
-# Add the folder path for the python parsing functions to the sys.path list
+import os
 from config_parser import ConfigHelper
 
 parser = ConfigHelper(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
-
 htmlOutputPath = config["htmlOutputPath"]
 
-# Only needed for Aberrant Expression: Outrider
-
+# OUTRIDER IDs
 outrider_all_ids, outrider_filtered = parser.getOutriderIds()
 config["outrider"] = outrider_all_ids
 config["outrider_filtered"] = outrider_filtered
 
 include: os.getcwd() + "/.wBuild/wBuild.snakefile"  # Has to be here in order to update the config with the new variables
-
+# create temporary folder
+if not os.path.exists('tmp'):
+    os.makedirs('tmp')
 
 rule all:
     input: rules.Index.output, htmlOutputPath + "/readme.html"
