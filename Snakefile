@@ -21,7 +21,7 @@ rule all:
     output: touch(htmlOutputPath + "/../all.done")
 
 rule count:
-    input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
+    input: htmlOutputPath + "/Scripts_Counting_Overview.html"
 
 rule filter_counts:
     input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)

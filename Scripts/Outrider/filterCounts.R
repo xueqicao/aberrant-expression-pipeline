@@ -25,23 +25,17 @@ suppressPackageStartupMessages({
 
 counts <- readRDS(snakemake@input$counts)
 ods <- OutriderDataSet(counts)
-
-# remove duplicates, as this will break OUTRIDER
-ids <- colData(counts)$sampleID
-dups <- duplicated(ids)
-if(sum(dups) > 0) {
-  message(paste('duplicate sample annotation entry for', ids[which(dups)], collapse = '\n'))
-  counts <- counts[, ids[which(!dups)]]
-  message('took first line per duplicate')
-}
-
-# filter not expressed genes
 txdb <- loadDb(snakemake@input$txdb)
 
+# filter not expressed genes
 ods <- filterExpression(ods, gtfFile=txdb, filter=FALSE, fpkmCutoff=snakemake@config$fpkmCutoff)
 g <- plotFPKM(ods) + theme_bw(base_size = 14)
 ggsave(snakemake@output$plot, g)
 
+# change row names from gene ID to gene name
+rownames(ods) <- rowRanges(ods)$gene_name
+
+# add column for genes with at least 1 gene
 rowData(ods)$counted1sample = rowSums(assay(ods)) > 0
 
 # Save the ods object before filtering, so as to preserve the original number of genes

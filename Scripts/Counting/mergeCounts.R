@@ -42,7 +42,7 @@ rowRanges(total_counts) <- rowRanges(counts_list[[1]])
 gene_annot_dt <- fread(snakemake@input$gene_name_mapping)
 row_data <- data.table(gene_id = names(total_counts))
 row_data <- left_join(row_data, gene_annot_dt[,.(gene_id, gene_name, gene_name_orig, gene_type)], by = "gene_id")
-rownames(row_data) <- rownames(total_counts) <- row_data$gene_name
+rownames(row_data) <- rownames(total_counts) <- row_data$gene_id
 rowData(total_counts) <- row_data
  
 
