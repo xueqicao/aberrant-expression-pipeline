@@ -26,6 +26,7 @@ register(MulticoreParam(snakemake@threads))
 # Read counts
 counts_list <- bplapply(snakemake@input$counts, readRDS)
 names(counts_list) <- snakemake@config$outrider[[snakemake@wildcards$dataset]]
+#print(names(counts_list))
 message(paste("read", length(counts_list), 'files'))
 
 # merge counts

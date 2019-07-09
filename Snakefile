@@ -15,6 +15,7 @@ if not os.path.exists('tmp'):
 outrider_all_ids, outrider_filtered = parser.getOutriderIds()
 config["outrider"] = outrider_all_ids
 config["outrider_filtered"] = outrider_filtered
+print(config["outrider"])
 
 rule all:
     input: rules.Index.output, htmlOutputPath + "/readme.html"

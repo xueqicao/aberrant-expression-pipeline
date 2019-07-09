@@ -27,7 +27,7 @@ counts <- readRDS(snakemake@input$counts)
 ods <- OutriderDataSet(counts)
 txdb <- loadDb(snakemake@input$txdb)
 
-# filter not expressed genes
+# filter not expressed genes ### Here we filter almost all samples --> zero counts
 ods <- filterExpression(ods, gtfFile=txdb, filter=FALSE, fpkmCutoff=snakemake@config$fpkmCutoff)
 g <- plotFPKM(ods) + theme_bw(base_size = 14)
 ggsave(snakemake@output$plot, g)
