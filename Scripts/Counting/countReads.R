@@ -3,7 +3,7 @@
 #' author: Michaela Mueller
 #' wb:
 #'  input:
-#'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, "wes_assay") `'
+#'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, isRNA=False) `'
 #'   - count_ranges: '`sm parser.getProcDataDir() + "/{annotation}/count_ranges.Rds" `'
 #'  output:
 #'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
