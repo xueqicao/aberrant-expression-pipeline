@@ -3,13 +3,14 @@
 #' author: Michaela Mueller
 #' wb:
 #'  input:
-#'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, isRNA=False) `'
+#'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, isRNA=True) `'
 #'   - count_ranges: '`sm parser.getProcDataDir() + "/{annotation}/count_ranges.Rds" `'
 #'  output:
 #'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
 #'  threads: 5
 #'---
+
 
 saveRDS(snakemake, "tmp/counts.snakemake")
 # snakemake <- readRDS("tmp/counts.snakemake")
@@ -75,7 +76,6 @@ se <- summarizeOverlaps(
 saveRDS(se, snakemake@output$counts)
 message("done")
 
-print(format(Sys.time()- starttime)) # time taken
+print(format(Sys.time()- starttime)) # print time taken
 print(sum(assay(se))) # total counts
-
 
