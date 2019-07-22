@@ -13,13 +13,13 @@ if not os.path.exists('tmp'):
 
 # OUTRIDER IDs
 outrider_all_ids, outrider_filtered = parser.getOutriderIds()
-config["outrider"] = outrider_all_ids
-config["outrider_filtered"] = outrider_filtered
-print(config["outrider"])
+#config["outrider"] = outrider_all_ids
+#config["outrider_filtered"] = outrider_filtered
+#print(config["outrider"])
 
 rule all:
-    input: rules.Index.output, htmlOutputPath + "/readme.html"
-    output: touch(htmlOutputPath + "/../all.done")
+    input: rules.Index.output
+    output: touch("Output/all.done")
 
 rule count:
     input: htmlOutputPath + "/Scripts_Counting_Overview.html"

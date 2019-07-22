@@ -24,7 +24,6 @@ suppressPackageStartupMessages({
     library(dplyr)
     library(ggbeeswarm)
     library(ggthemes)
-    #devtools::load_all("../genetic-diagnosis-tools")
 })
 
 #' ## Read ods object
