@@ -59,11 +59,11 @@ plotAberrantPerSample(ods, main = snakemake@wildcards$dataset)
 devtools::load_all("/data/ouga04b/homes/cao/workspace/OUTRIDER/")
 
 # add ordinary feature
-ods = addOrdinalFeature(ods, feature = "Age", margin = 2, 
+ods = addOrdinalFeature(ods, feature = "Age", margin = 2,
                         labels_of_category = c("<50", "50s", "60s", "70s", "80s", ">90"),
                         category_of_customized_length = TRUE,
-                        breaks_of_customized_category = c(-Inf, 50, 60, 70, 80, 90, Inf)
-)
+                        breaks_of_customized_category = c(-Inf, 50, 60, 70, 80, 90, Inf))
+
 
 # count cor heatmap
 customized_color = createOrdinalColor(ods, c("AgeOrdinal"))
