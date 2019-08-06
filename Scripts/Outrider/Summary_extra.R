@@ -7,7 +7,7 @@
 #'   - results: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'   - results_public: '`sm config["webDir"] + "/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'  output:
-#'   - wBhtml: '`sm config["htmlOutputPath"] + "/Outrider/{annotation}/Summary_{dataset}.html"`'
+#'   - wBhtml: '`sm config["htmlOutputPath"] + "/Outrider/{annotation}/Summary_extra_{dataset}.html"`'
 #'  type: noindex
 #'---
 
