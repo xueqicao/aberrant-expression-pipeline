@@ -29,6 +29,8 @@ suppressPackageStartupMessages({
 
 
 
+
+
 #' ## Read ods object
 ods <- readRDS(snakemake@input$ods)
 
@@ -38,22 +40,72 @@ dim(ods)
 
 
 
+
+
 #' ## Visualize
+
 #' ### Parameters
 barplot(sort(sizeFactors(ods)), main = paste('Size Factors (', snakemake@wildcards$dataset, ')'), xaxt = 'n', xlab = 'rank', ylab = 'Size Factors')
 plotEncDimSearch(ods)
 
+
 #' ### Aberrant samples
 plotAberrantPerSample(ods, main = snakemake@wildcards$dataset)
 
+
 #' ### Batch correction
-#+ heatmap, fig.height=8, fig.width=8
-plotCountCorHeatmap(ods, normalized = FALSE, main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
-plotCountCorHeatmap(ods, normalized = TRUE, main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
+# load the function 
+# load the newest OUTRIDER- not published
+devtools::load_all("/data/ouga04b/homes/cao/workspace/OUTRIDER/")
+
+# add ordinary feature
+ods = addOrdinalFeature(ods, feature = "Age", margin = 2, 
+                        labels_of_category = c("<50", "50s", "60s", "70s", "80s", ">90"),
+                        category_of_customized_length = TRUE,
+                        breaks_of_customized_category = c(-Inf, 50, 60, 70, 80, 90, Inf)
+)
+
+# count cor heatmap
+customized_color = createOrdinalColor(ods, c("AgeOrdinal"))
+
+devtools::load_all("~/workspace/OUTRIDER/")
 
 #+ heatmap, fig.height=8, fig.width=8
-plotCountCorHeatmap(ods, normalized = FALSE, main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
-plotCountCorHeatmap(ods, normalized = TRUE, main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
+plotCountCorHeatmap(ods, normalized = FALSE,  
+                    colGroups = c("Gender","Diag", "AgeOrdinal"),
+                    customized_color = customized_color,
+                    main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
+
+#+ heatmap, fig.height=8, fig.width=8
+plotCountCorHeatmap(ods, normalized = TRUE,  
+                    colGroups = c("Gender","Diag", "AgeOrdinal"),
+                    customized_color = customized_color,
+                    main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
+
+
+#' ### gene sample heatmap
+bcv = 1/sqrt( theta( ods ))
+bcv_sub = bcv > quantile( bcv, probs = c(0.95))
+ods_sub = ods[ bcv_sub, ]
+
+#+ heatmap, fig.height=15, fig.width=6
+plotCountGeneSampleHeatmap(ods_sub, normalized = FALSE,  
+                           colGroups = c("Diag", "Gender", "AgeOrdinal"),
+                           nGenes = nrow(ods_sub),
+                           customized_color = customized_color,
+                           main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
+
+#+ heatmap, fig.height=15, fig.width=6
+plotCountGeneSampleHeatmap(ods_sub, normalized = TRUE,  
+                           colGroups = c("Diag", "Gender", "AgeOrdinal"),
+                           nGenes = nrow(ods_sub),
+                           customized_color = customized_color,
+                           main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
+
+
+
+
+
 
 #' ### BCV - Biological Cofficient of Variation
 #' ods2 <- OutriderDataSet(countData = counts(ods))
@@ -78,15 +130,20 @@ boxplot( 1/sqrt( estimateThetaWithoutAutoCorrect( ods )) ,1/sqrt( theta( ods )),
 
 
 
+
+
 #' ## Results
 res <- fread(snakemake@input$results)
+
 
 #' ### How many samples with at least one gene
 res[, uniqueN(sampleID)]
 
+
 #' ### Positive/Negative outlier
 res[, zScore > 0]
 res[, zScore < 0]
+
 
 #' ### Aberrant samples
 if (nrow(res) > 0) {
@@ -100,6 +157,7 @@ if (nrow(res) > 0) {
 } else {
     print('no results')
 }
+
 
 #' ### Download Aberrant Samples Table
 #' TODO
