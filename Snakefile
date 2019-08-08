@@ -1,25 +1,21 @@
 ### SNAKEFILE ABERRANT EXPRESSION
-
 import os
 from config_parser import ConfigHelper
 
-parser = ConfigHelper(config)
-config = parser.config # needed if you dont provide the wbuild.yaml as configfile
-htmlOutputPath = config["htmlOutputPath"]
-include: os.getcwd() + "/.wBuild/wBuild.snakefile"  # Has to be here in order to update the config with the new variables
-# create temporary folder
+## ADD tmp/ DIR
 if not os.path.exists('tmp'):
     os.makedirs('tmp')
 
-# OUTRIDER IDs
-outrider_all_ids, outrider_filtered = parser.getOutriderIds()
-#config["outrider"] = outrider_all_ids
-#config["outrider_filtered"] = outrider_filtered
-#print(config["outrider"])
+print("In ABERRANT EXPRESSION", config)
+parser = ConfigHelper(config)
+config = parser.config # needed if you dont provide the wbuild.yaml as configfile
+htmlOutputPath = config["htmlOutputPath"]
+include: os.getcwd() + "/.wBuild/wBuild.snakefile" 
+
 
 rule all:
     input: rules.Index.output
-    output: touch("Output/all.done")
+    output: touch("tmp/aberrant_expression.done")
 
 rule count:
     input: htmlOutputPath + "/Scripts_Counting_Overview.html"

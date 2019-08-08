@@ -5,7 +5,7 @@
 #'  input:
 #'   - gtf: '`sm lambda wildcards: parser.getGeneAnnotationFile(wildcards.annotation) `'
 #'  output:
-#'   - txdb: '`sm parser.getProcDataDir() + "/{annotation}/txdb.db"`'
+#'   - txdb: '`sm parser.getProcDataDir() + "/{annotation}/mytxdb.db"`'
 #'  type: script
 #'---
 
