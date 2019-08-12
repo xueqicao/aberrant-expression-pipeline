@@ -8,7 +8,7 @@
 #'  output:
 #'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
-#'  threads: 5
+#'  threads: 1
 #'---
 
 
