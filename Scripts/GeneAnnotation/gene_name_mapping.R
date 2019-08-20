@@ -5,7 +5,7 @@
 #'  input:
 #'   - gtf: '`sm lambda wildcards: parser.getGeneAnnotationFile(wildcards.annotation) `'
 #'  output:
-#'   - gene_name_mapping: '`sm parser.getProcDataDir() + "/{annotation}/gene_name_mapping.Rds"`'
+#'   - gene_name_mapping: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/gene_name_mapping.Rds"`'
 #'  type: script
 #'---
 

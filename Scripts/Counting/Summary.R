@@ -3,10 +3,10 @@
 #' author: Daniela Andrade, Michaela Muller
 #' wb:
 #'  input: 
-#'    - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
-#'    - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'    - counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/total_counts.Rds"`'
+#'    - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
 #'  output:
-#'   - wBhtml: '`sm config["htmlOutputPath"] + "/Counting/{annotation}/Summary_{dataset}.html"`'
+#'   - wBhtml: '`sm config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html"`'
 #'  type: noindex
 #'---
 

@@ -13,6 +13,9 @@ htmlOutputPath = config["htmlOutputPath"]
 include: os.getcwd() + "/.wBuild/wBuild.snakefile" 
 
 
+## Do not delete this, needed in mergeCounts.R
+config["outrider_all"], _ = parser.getOutriderIds()
+
 rule all:
     input: rules.Index.output
     output: touch("tmp/aberrant_expression.done")

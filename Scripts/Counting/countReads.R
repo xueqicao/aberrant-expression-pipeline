@@ -4,9 +4,9 @@
 #' wb:
 #'  input:
 #'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, isRNA=True) `'
-#'   - count_ranges: '`sm parser.getProcDataDir() + "/{annotation}/count_ranges.Rds" `'
+#'   - count_ranges: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/count_ranges.Rds" `'
 #'  output:
-#'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
+#'   - counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
 #'  threads: 1
 #'---
