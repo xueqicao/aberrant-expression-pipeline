@@ -49,7 +49,7 @@ plotAberrantPerSample(ods, main = snakemake@wildcards$dataset)
 
 
 #' ### Batch correction
-#+ heatmap, fig.height=8, fig.width=8
+#+ heatmap1, fig.height=8, fig.width=8
 plotCountCorHeatmap(ods, normalized = FALSE, main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
 plotCountCorHeatmap(ods, normalized = TRUE, main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
 
@@ -60,11 +60,11 @@ bcv = 1/sqrt( theta( ods ))
 bcv_sub = bcv > quantile( bcv, probs = c(0.95))
 ods_sub = ods[ bcv_sub, ]
 
-#+ heatmap, fig.height=15, fig.width=6
-plotCountGeneSampleHeatmap(ods_sub, normalized = FALSE, nGenes = nrow(ods_sub),
-                           main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
-plotCountGeneSampleHeatmap(ods_sub, normalized = TRUE, nGenes = nrow(ods_sub),
-                           main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
+# #+ heatmap2, fig.height=15, fig.width=6
+# plotCountGeneSampleHeatmap(ods_sub, normalized = FALSE, nGenes = nrow(ods_sub),
+#                           main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
+#plotCountGeneSampleHeatmap(ods_sub, normalized = TRUE, nGenes = nrow(ods_sub),
+#                           main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
 
 
 #' ### BCV - Biological Cofficient of Variation
