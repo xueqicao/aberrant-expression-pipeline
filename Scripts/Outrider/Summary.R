@@ -61,7 +61,7 @@ bcv_sub = bcv > quantile( bcv, probs = c(0.95))
 ods_sub = ods[ bcv_sub, ]
 
 # #+ heatmap2, fig.height=15, fig.width=6
-#plotCountGeneSampleHeatmap(ods_sub, normalized = FALSE, nGenes = nrow(ods_sub),
+# plotCountGeneSampleHeatmap(ods_sub, normalized = FALSE, nGenes = nrow(ods_sub),
 #                           main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
 #plotCountGeneSampleHeatmap(ods_sub, normalized = TRUE, nGenes = nrow(ods_sub),
 #                           main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
