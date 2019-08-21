@@ -69,7 +69,7 @@ se <- summarizeOverlaps(
     , ignore.strand = !strand_spec  # FALSE if done strand specifically
     , fragments = F
     , count.mapped.reads = T
-    , inter.feature = inter_feature # TRUE, reads mapping to multiple features are dropped
+    , inter.feature = !inter_feature # TRUE: reads mapping to multiple features are dropped
     , preprocess.reads = preprocess_reads
     , BPPARAM = MulticoreParam(snakemake@threads)
 )
