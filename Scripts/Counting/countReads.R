@@ -29,6 +29,7 @@ sample_anno <- sample_anno[get(snakemake@config$rna_assay) == sampleID]
 count_mode <- sample_anno[, get(snakemake@config$count_mode_column)]
 paired_end <- sample_anno[, get(snakemake@config$paired_end_column)]
 inter_feature <- sample_anno[, get(snakemake@config$inter_feature_column)]
+inter_feature <- ! inter_feature # inter_feature = FALSE does not allow overlaps
 strand <- sample_anno[, get(snakemake@config$strand_column)]
 
 # infer preprocessing and strand info
@@ -69,7 +70,7 @@ se <- summarizeOverlaps(
     , ignore.strand = !strand_spec  # FALSE if done strand specifically
     , fragments = F
     , count.mapped.reads = T
-    , inter.feature = inter_feature # TRUE, reads mapping to multiple features are dropped
+    , inter.feature = inter_feature # TRUE: reads mapping to multiple features are dropped
     , preprocess.reads = preprocess_reads
     , BPPARAM = MulticoreParam(snakemake@threads)
 )
