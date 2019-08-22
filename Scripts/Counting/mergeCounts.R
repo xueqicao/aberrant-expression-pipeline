@@ -4,9 +4,9 @@
 #' wb:
 #'  input: 
 #'    - counts: '`sm lambda wildcards: parser.getCountFileByOutriderGroup(wildcards.annotation, wildcards.dataset)`'
-#'    - gene_name_mapping: '`sm parser.getProcDataDir() + "/{annotation}/gene_name_mapping.Rds"`'
+#'    - gene_name_mapping: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/gene_name_mapping.Rds"`'
 #'  output:
-#'    - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
+#'    - counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/total_counts.Rds"`'
 #'  threads: 30
 #'  type: script
 #'---
@@ -21,11 +21,15 @@ suppressPackageStartupMessages({
     library(dplyr)
 })
 
+
+names <- snakemake@config$outrider_all[[snakemake@wildcards$dataset]]
+print(names)
+
 register(MulticoreParam(snakemake@threads))
 
 # Read counts
 counts_list <- bplapply(snakemake@input$counts, readRDS)
-names(counts_list) <- snakemake@config$outrider[[snakemake@wildcards$dataset]]
+names(counts_list) <- names
 #print(names(counts_list))
 message(paste("read", length(counts_list), 'files'))
 

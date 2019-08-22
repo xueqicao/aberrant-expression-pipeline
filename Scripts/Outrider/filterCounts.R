@@ -3,12 +3,12 @@
 #' author: Michaela Mueller
 #' wb:
 #'  input:
-#'   - counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/total_counts.Rds"`'
-#'   - txdb: '`sm parser.getProcDataDir() + "/{annotation}/txdb.db"`'
+#'   - counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/total_counts.Rds"`'
+#'   - txdb: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/txdb.db"`'
 #'  output:
-#'   - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
-#'   - plot: '`sm parser.getProcDataDir() + "/{annotation}/outrider/{dataset}/filtered_hist.png"`'
-#'   - filtered_counts: '`sm parser.getProcDataDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds"`'
+#'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'   - plot: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/filtered_hist.png"`'
+#'   - filtered_counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/filtered_counts.Rds"`'
 #'  type: script
 #'---
 

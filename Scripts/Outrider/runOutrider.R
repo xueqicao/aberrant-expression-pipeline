@@ -3,9 +3,9 @@
 #' author: Michaela Mueller
 #' wb:
 #'  input:
-#'   - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
 #'  output:
-#'   - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
 #'  type: script
 #'  threads: 30
 #'---

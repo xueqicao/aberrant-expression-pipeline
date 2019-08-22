@@ -3,11 +3,11 @@
 #' author: mumichae
 #' wb:
 #'  input:
-#'   - ods: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
 #'  output:
-#'   - results: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
-#'   - results_all: '`sm parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results_all.Rds"`'
-#'   - results_public: '`sm config["webDir"] + "/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
+#'   - results: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
+#'   - results_all: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results_all.Rds"`'
+#'   - results_public: '`sm config["webDir"] + "/aberrant_expression/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'  type: script
 #'---
 
