@@ -13,7 +13,7 @@
 saveRDS(snakemake, "tmp/counting_overview.snakemake")
 # snakemake <- readRDS("tmp/counting_overview.snakemake")
 
-groups <- names(snakemake@config$outrider_filtered)
+groups <- names(snakemake@config$outrider_all)
 gene_annotation_names <- names(snakemake@config$GENE_ANNOTATION)
 summaries_titles <- paste(gene_annotation_names, groups)
 summaries <- paste('[', summaries_titles ,'](', gsub(snakemake@config$htmlOutputPath, ".", snakemake@input$summaries), ')', sep = '')
