@@ -17,7 +17,7 @@ include: os.getcwd() + "/.wBuild/wBuild.snakefile"
 config["outrider_all"], _ = parser.getOutriderIds()
 
 rule all:
-    input: rules.Index.output
+    input: rules.Index.output, htmlOutputPath + "/readme.html"
     output: touch("tmp/aberrant_expression.done")
 
 rule count:

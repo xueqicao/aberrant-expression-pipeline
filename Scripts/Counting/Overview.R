@@ -1,6 +1,6 @@
 #'---
 #' title: Counts Overview
-#' author: Michaela Muller
+#' author:  mumichae, salazar
 #' wb:
 #'  input: 
 #'  - summaries: '`sm expand(config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)`'
@@ -18,4 +18,4 @@ gene_annotation_names <- names(snakemake@config$GENE_ANNOTATION)
 summaries_titles <- paste(gene_annotation_names, groups)
 summaries <- paste('[', summaries_titles ,'](', gsub(snakemake@config$htmlOutputPath, ".", snakemake@input$summaries), ')', sep = '')
 summaries <- paste(summaries, sep = '\n')
-#' Summaries: `r summaries`
+#' Summaries:  `r summaries`
