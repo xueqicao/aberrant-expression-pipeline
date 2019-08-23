@@ -13,6 +13,7 @@
 saveRDS(snakemake, "tmp/outrider_overview.snakemake")
 # snakemake <- readRDS("tmp/outrider_overview.snakemake")
 
+
 groups <- names(snakemake@config$outrider_all)
 gene_annotation_names <- names(snakemake@config$GENE_ANNOTATION)
 summaries_titles <- paste(gene_annotation_names, groups)

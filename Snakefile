@@ -6,7 +6,7 @@ from config_parser import ConfigHelper
 if not os.path.exists('tmp'):
     os.makedirs('tmp')
 
-print("In ABERRANT EXPRESSION", config)
+#print("In ABERRANT EXPRESSION", config)
 parser = ConfigHelper(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
 htmlOutputPath = config["htmlOutputPath"]
@@ -17,7 +17,7 @@ include: os.getcwd() + "/.wBuild/wBuild.snakefile"
 config["outrider_all"], _ = parser.getOutriderIds()
 
 rule all:
-    input: rules.Index.output, htmlOutputPath + "/readme.html"
+    input: rules.Index.output, htmlOutputPath + "/aberrant_expression_readme.html"
     output: touch("tmp/aberrant_expression.done")
 
 rule count:
@@ -36,6 +36,31 @@ rule outrider_results:
     input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
 
 
-# overwriting wbuild rule output
-rule rulegraph:
-    shell: "snakemake --rulegraph | dot -Tsvg -Grankdir=TB > {config[htmlOutputPath]}/dep.svg"
+   
+### RULEGRAPH  
+### rulegraph only works without print statements. Call <snakemake produce_rulegraph> for producing output
+
+## For rule rulegraph.. copy configfile in tmp file
+import oyaml
+with open('tmp/config.yaml', 'w') as yaml_file:
+    oyaml.dump(config, yaml_file, default_flow_style=False)
+    
+rulegraph_filename = htmlOutputPath + "/" + os.path.basename(os.getcwd()) + "_rulegraph"
+rule produce_rulegraph:
+    input:
+        expand(rulegraph_filename + ".{fmt}", fmt=["svg", "png"])
+
+rule create_graph:
+    output:
+        rulegraph_filename + ".dot"
+    shell:
+        "snakemake --configfile tmp/config.yaml --rulegraph > {output}"
+
+rule render_dot:
+    input:
+        "{prefix}.dot"
+    output:
+        "{prefix}.{fmt,(png|svg)}"
+    shell:
+        "dot -T{wildcards.fmt} < {input} > {output}"
+
