@@ -26,7 +26,6 @@ suppressPackageStartupMessages({
   library(GenomicAlignments)
   library(dplyr)
   library(tidyr)
-  devtools::load_all("../genetic-diagnosis-tools")
 })
 
 
