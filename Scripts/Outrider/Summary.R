@@ -27,15 +27,10 @@ suppressPackageStartupMessages({
 })
 
 
-
-
-#' ## Read ods object
+#' ## Read the ods object
 ods <- readRDS(snakemake@input$ods)
 # Number of samples and genes
 dim(ods)
-
-
-
 
 
 #' ## Visualize
@@ -77,7 +72,6 @@ estimateThetaWithoutAutoCorrect = function(ods){
   ods1 <- fit(ods1)
   theta(ods1)
   
-  
   return(theta(ods1))
 }
 
@@ -86,8 +80,6 @@ boxplot( 1/sqrt( estimateThetaWithoutAutoCorrect( ods )) ,1/sqrt( theta( ods )),
          names = c("Before","After"),
          main = paste("BCV - Before and After Autoencoder (",snakemake@wildcards$dataset, ')'),
          ylab = "BCV")
-
-
 
 
 #' ## Results
@@ -113,4 +105,4 @@ if (nrow(res) > 0) {
 #' TODO
 #results_link <- paste0('https://i12g-gagneurweb.informatik.tu-muenchen.de/project/genetic_diagnosis/results/', snakemake@wildcards$annotation,'/OUTRIDER_results_', snakemake@wildcards$dataset, '.tsv')
 # #' [Download OUTRIDER results table](`r results_link`)
-#DT::datatable(res, caption = "OUTRIDER results", style = 'bootstrap', filter = 'top')
+DT::datatable(res, caption = "OUTRIDER results", style = 'bootstrap', filter = 'top')
