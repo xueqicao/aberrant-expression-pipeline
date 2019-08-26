@@ -11,8 +11,8 @@
 #'---
 
 
-saveRDS(snakemake, "tmp/counting_summary.snakemake")
-#snakemake <- readRDS("tmp/counting_summary.snakemake")
+saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/counting_summary.snakemake") )
+#snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/counting_summary.snakemake") )
 
 suppressPackageStartupMessages({
   library(OUTRIDER)

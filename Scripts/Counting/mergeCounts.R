@@ -11,8 +11,8 @@
 #'  type: script
 #'---
 
-saveRDS(snakemake, "tmp/count_all.snakemake")
-# snakemake <- readRDS("submodules/aberrant-expression-pipeline/tmp/count_all.snakemake")
+saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/merge_counts.snakemake"))
+# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/merge_counts.snakemake") )
 
 suppressPackageStartupMessages({
     library(BiocParallel)

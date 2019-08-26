@@ -3,9 +3,12 @@ import os
 from config_parser import ConfigHelper
 
 ## ADD tmp/ DIR
-if not os.path.exists('tmp'):
-    os.makedirs('tmp')
-
+tmpdir = config["ROOT"] +'/tmp'
+config["tmpdir"] = tmpdir
+if not os.path.exists(tmpdir):
+    os.makedirs(tmpdir)
+    
+    
 #print("In ABERRANT EXPRESSION", config)
 parser = ConfigHelper(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
@@ -18,7 +21,7 @@ config["outrider_all"], _ = parser.getOutriderIds()
 
 rule all:
     input: rules.Index.output, htmlOutputPath + "/aberrant_expression_readme.html"
-    output: touch("tmp/aberrant_expression.done")
+    output: touch(tmpdir + "/aberrant_expression.done")
 
 rule count:
     input: htmlOutputPath + "/Scripts_Counting_Overview.html"
@@ -42,7 +45,7 @@ rule outrider_results:
 
 ## For rule rulegraph.. copy configfile in tmp file
 import oyaml
-with open('tmp/config.yaml', 'w') as yaml_file:
+with open(tmpdir + '/config.yaml', 'w') as yaml_file:
     oyaml.dump(config, yaml_file, default_flow_style=False)
     
 rulegraph_filename = htmlOutputPath + "/" + os.path.basename(os.getcwd()) + "_rulegraph"
@@ -54,7 +57,7 @@ rule create_graph:
     output:
         rulegraph_filename + ".dot"
     shell:
-        "snakemake --configfile tmp/config.yaml --rulegraph > {output}"
+        "snakemake --configfile" + tmpdir + "/config.yaml --rulegraph > {output}"
 
 rule render_dot:
     input:

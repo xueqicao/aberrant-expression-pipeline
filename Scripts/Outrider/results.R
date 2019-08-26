@@ -12,8 +12,8 @@
 #'---
 
 #+ echo=F
-saveRDS(snakemake, "tmp/outrider_results.snakemake")
-# snakemake <- readRDS("tmp/outrider_results.snakemake")
+saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_results.snakemake"))
+# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_results.snakemake"))
 
 suppressPackageStartupMessages({
     library(OUTRIDER)

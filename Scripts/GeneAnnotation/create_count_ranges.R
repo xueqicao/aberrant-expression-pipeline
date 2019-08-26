@@ -11,8 +11,9 @@
 #'---
 
 
-saveRDS(snakemake,  "tmp/count_ranges.snakemake")
-# snakemake <- readRDS("tmp/count_ranges.snakemake")
+saveRDS(snakemake,  paste0(snakemake@config$tmpdir, "/AberrantExpression/count_ranges.snakemake") )
+# snakemake <- readRDS("paste0(snakemake@config$tmpdir, "/AberrantExpression/count_ranges.snakemake") )
+
 suppressPackageStartupMessages({
   library(data.table)
   library(dplyr)

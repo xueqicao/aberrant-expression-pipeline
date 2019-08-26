@@ -10,8 +10,8 @@
 #'    code_download: TRUE
 #'---
 
-saveRDS(snakemake, "tmp/counting_overview.snakemake")
-# snakemake <- readRDS("tmp/counting_overview.snakemake")
+saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/counting_overview.snakemake") )
+# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/counting_overview.snakemake")
 
 groups <- names(snakemake@config$outrider_all)
 gene_annotation_names <- names(snakemake@config$GENE_ANNOTATION)

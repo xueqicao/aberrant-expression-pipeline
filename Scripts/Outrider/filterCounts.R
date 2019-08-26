@@ -12,8 +12,9 @@
 #'  type: script
 #'---
 
-saveRDS(snakemake, "tmp/filter_counts.snakemake")
-# snakemake <- readRDS("tmp/filter_counts.snakemake")
+saveRDS(snakemake,  paste0(snakemake@config$tmpdir, "/AberrantExpression/filter_counts.snakemake") )
+# snakemake <- readRDS( paste0(snakemake@config$tmpdir, "/AberrantExpression/filter_counts.snakemake") )
+
 suppressPackageStartupMessages({
     library(OUTRIDER)
     library(GenomicFeatures)

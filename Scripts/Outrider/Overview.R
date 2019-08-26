@@ -10,8 +10,8 @@
 #'    code_download: TRUE
 #'---
 
-saveRDS(snakemake, "tmp/outrider_overview.snakemake")
-# snakemake <- readRDS("tmp/outrider_overview.snakemake")
+saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_overview.snakemake")  )
+# snakemake <- readRDS( paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_overview.snakemake") )
 
 
 groups <- names(snakemake@config$outrider_all)

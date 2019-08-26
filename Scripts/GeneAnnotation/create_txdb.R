@@ -9,8 +9,8 @@
 #'  type: script
 #'---
 
-saveRDS(snakemake,  "tmp/txdb.snakemake")
-# snakemake <- readRDS("tmp/txdb.snakemake")
+saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/txdb.snakemake") )
+# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/txdb.snakemake") )
 
 suppressPackageStartupMessages({
   library(GenomicFeatures)

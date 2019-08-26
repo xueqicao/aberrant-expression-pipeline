@@ -19,8 +19,9 @@ suppressPackageStartupMessages({
     library(magrittr)
 })
 
-saveRDS(snakemake, "tmp/outrider.snakemake")
-# snakemake <- readRDS("tmp/outrider.snakemake")
+saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider.snakemake"))
+# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider.snakemake"))
+
 ods <- readRDS(snakemake@input$ods)
 
 # OUTRIDER pipeline

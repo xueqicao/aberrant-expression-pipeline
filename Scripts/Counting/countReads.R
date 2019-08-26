@@ -12,8 +12,9 @@
 #'---
 
 
-saveRDS(snakemake, "tmp/counts.snakemake")
-# snakemake <- readRDS("tmp/counts.snakemake")
+saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/counts.snakemake") )
+# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/counts.snakemake"))
+
 suppressPackageStartupMessages({
   library(data.table)
   library(Rsamtools)
