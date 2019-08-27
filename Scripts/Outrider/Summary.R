@@ -101,8 +101,15 @@ if (nrow(res) > 0) {
     print('no results')
 }
 
+
+#' ## Results table
+#+echo=F
+res[, pValue := format(pValue, scientific = T, digits = 2)]
+res[, padjust := format(padjust, scientific = T, digits = 2)]
+DT::datatable(res, caption = "OUTRIDER results", style = 'bootstrap', filter = 'top')
+
+#'
 #' ### Download Aberrant Samples Table
 #' TODO
 #results_link <- paste0('https://i12g-gagneurweb.informatik.tu-muenchen.de/project/genetic_diagnosis/results/', snakemake@wildcards$annotation,'/OUTRIDER_results_', snakemake@wildcards$dataset, '.tsv')
 # #' [Download OUTRIDER results table](`r results_link`)
-DT::datatable(res, caption = "OUTRIDER results", style = 'bootstrap', filter = 'top')
