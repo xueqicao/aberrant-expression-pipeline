@@ -1,5 +1,5 @@
 #'---
-#' title: OUTRIDER Summary
+#' title: "OUTRIDER Summary: `r gsub('_', ' ', snakemake@wildcards$dataset)`"
 #' author: mumichae, vyepez
 #' wb:
 #'  input:
@@ -13,7 +13,7 @@
 
 #+ echo=F
 saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_summary.snakemake") )
-# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_summary.snakemake"))
+# snakemake <- readRDS("tmp/AberrantExpression/outrider_summary.snakemake"))
 
 suppressPackageStartupMessages({
     library(OUTRIDER)
