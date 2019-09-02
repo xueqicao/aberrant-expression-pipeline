@@ -14,24 +14,25 @@ config["tmpdir"] = tmpdir
 if not os.path.exists(tmpdir+'/AberrantExpression'):
     os.makedirs(tmpdir+'/AberrantExpression')
 
+# get group subsets
+config['outrider_all'] = parser.outrider_all
+config['outrider_filtered'] = parser.outrider_filtered
+
 rule all:
     input: rules.Index.output, htmlOutputPath + "/aberrant_expression_readme.html"
     output: touch(tmpdir + "/aberrant_expression.done")
 
 rule count:
-    input: htmlOutputPath + "/Scripts_Counting_Overview.html"
-
-rule filter_counts:
-    input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
-
-rule outrider:
-    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
+    input: expand(parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/total_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
 
 rule counting_results:
-    input: expand(htmlOutputPath + "/Counting/{annotation}/CountingSummary_{dataset}.html", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
+    input: htmlOutputPath + "/Scripts_Counting_AllDatasets.html"
+
+rule outrider:
+    input: expand(parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
 
 rule outrider_results:
-    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
+    input: expand(parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
 
 rule read_count_qc:
     input:

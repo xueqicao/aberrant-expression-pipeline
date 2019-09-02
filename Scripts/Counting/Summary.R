@@ -4,6 +4,7 @@
 #' wb:
 #'  input: 
 #'    - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'    - qc: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/qc.tsv"`'
 #'  output:
 #'   - wBhtml: '`sm config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html"`'
 #'  type: noindex
@@ -27,15 +28,45 @@ suppressPackageStartupMessages({
 })
 
 ods <- readRDS(snakemake@input$ods)
+cnts_mtx <- counts(ods, normalized = F)
 
 #' # Count Quality Control
 #' 
 #' Compare number of records vs. read counts
 #' 
+qc_dt <- left_join(fread(snakemake@input$qc),
+                   data.table(sampleID = colnames(ods),
+                              read_count = colSums(cnts_mtx)),
+                   by = "sampleID") %>% as.data.table
+qc_dt[, counted_frac := read_count/record_count]
+setorder(qc_dt, "counted_frac")
+qc_dt[, rank := .I]
+
+ggplot(qc_dt, aes(rank, counted_frac)) +
+  geom_point() +
+  theme_cowplot() +
+  background_grid() +
+  labs(title = "Quality Control: Obtained Read Counts",
+       x = "Sample Rank", 
+       y = "Percent Reads Counted")
+
+#' # Size Factors
+#' 
+ods <- estimateSizeFactors(ods)
+sample_dt <- data.table(sample_id = colnames(ods), size_factors = sizeFactors(ods))
+setorder(sample_dt, size_factors)
+sample_dt[, rank := 1:.N]
+ggplot(sample_dt, aes(rank, size_factors)) +
+  geom_point() +
+  ylim(c(0,NA)) +
+  theme_cowplot() +
+  background_grid() +
+  labs(title = paste('Size Factors', snakemake@wildcards$dataset),
+       x = 'Sample Rank', y = 'Size Factors')
+
 
 #' # Filtering
 quant <- .95
-cnts_mtx <- counts(ods, normalized = F)
 filter_mtx <- list(
   all = cnts_mtx,
   passed_FPKM = cnts_mtx[rowData(ods)$passedFilter,],
@@ -73,4 +104,7 @@ plot_grid(p_hist, p_dens)
 
 #' Expressed genes per sample
 #+ expressedGenes, fig.height=7, fig.width=9
-plotExpressedGenes(ods)
+plotExpressedGenes(ods) +
+  theme_cowplot() +
+  background_grid()
+
