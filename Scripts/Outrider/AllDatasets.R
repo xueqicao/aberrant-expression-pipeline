@@ -3,7 +3,8 @@
 #' author: mumichae
 #' wb:
 #'  input:
-#'  - summaries: '`sm expand(config["htmlOutputPath"] + "/AberrantExpression/Outrider/{annotation}/Summary_{dataset}.html", annotation=list(config["GENE_ANNOTATION"].keys()) , dataset=parser.outrider_filtered)`'
+#'  - summaries: '`sm expand(config["htmlOutputPath"] + "/AberrantExpression/Outrider/{annotation}/Summary_{dataset}.html",
+#'    annotation=config["GENE_ANNOTATION"].keys() , dataset=parser.outrider_filtered)`'
 #' output:
 #'   html_document:
 #'    code_folding: hide

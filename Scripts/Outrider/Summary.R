@@ -1,5 +1,5 @@
 #'---
-#' title: OUTRIDER Summary
+#' title: "OUTRIDER Summary: `r gsub('_', ' ', snakemake@wildcards$dataset)`"
 #' author: mumichae, vyepez
 #' wb:
 #'  input:
@@ -13,7 +13,7 @@
 
 #+ echo=F
 saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_summary.snakemake") )
-# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_summary.snakemake"))
+# snakemake <- readRDS(snakemake@config$tmpdir, "/AberrantExpression/outrider_summary.snakemake"))
 
 suppressPackageStartupMessages({
     library(OUTRIDER)
@@ -35,8 +35,10 @@ dim(ods)
 
 #' ## Visualize
 #' ### Parameters
-barplot(sort(sizeFactors(ods)), main = paste('Size Factors (', snakemake@wildcards$dataset, ')'), xaxt = 'n', xlab = 'rank', ylab = 'Size Factors')
-plotEncDimSearch(ods)
+plotEncDimSearch(ods) +
+  theme_cowplot() +
+  background_grid() +
+  scale_color_brewer(palette = "Set1")
 
 
 #' ### Aberrant samples
@@ -92,7 +94,7 @@ res[, uniqueN(sampleID)]
 if (nrow(res) > 0) {
     ab_table <- res[AberrantBySample > nrow(ods)/1000, .N, by = .(sampleID)] %>% unique
     if (nrow(ab_table) > 0) {
-      setorder(ab_table, N)
+      setorder(ab_table, N) 
       DT::datatable(ab_table)
     } else {
       print("no aberrant samples")
@@ -109,5 +111,5 @@ res[, padjust := format(padjust, scientific = T, digits = 2)]
 DT::datatable(res, caption = "OUTRIDER results", style = 'bootstrap', filter = 'top')
 
 #' ### Download Aberrant Samples Table
-results_link <- snakemake@input$results_public #paste0('https://i12g-gagneurweb.informatik.tu-muenchen.de/project/genetic_diagnosis/results/', snakemake@wildcards$annotation,'/OUTRIDER_results_', snakemake@wildcards$dataset, '.tsv')
+results_link <- snakemake@input$results_public
 #' [Download OUTRIDER results table](`r results_link`)

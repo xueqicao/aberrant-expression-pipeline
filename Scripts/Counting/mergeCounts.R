@@ -21,14 +21,11 @@ suppressPackageStartupMessages({
     library(dplyr)
 })
 
-
-names <- snakemake@config$outrider_all[[snakemake@wildcards$dataset]]
-print(names)
-
 register(MulticoreParam(snakemake@threads))
 
 # Read counts
 counts_list <- bplapply(snakemake@input$counts, readRDS)
+names <- snakemake@config$outrider_all[[snakemake@wildcards$dataset]]
 names(counts_list) <- names
 
 message(paste("read", length(counts_list), 'files'))

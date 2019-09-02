@@ -2,44 +2,53 @@
 import os
 from config_parser import ConfigHelper
 
-## ADD tmp/ DIR
-tmpdir = config["ROOT"] + '/' + config["DATASET_NAME"] + '/tmp'
-config["tmpdir"] = tmpdir
-if not os.path.exists(tmpdir+'/AberrantExpression'):
-    os.makedirs(tmpdir+'/AberrantExpression')
-    
-    
 #print("In ABERRANT EXPRESSION", config)
 parser = ConfigHelper(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
 htmlOutputPath = config["htmlOutputPath"]
 include: os.getcwd() + "/.wBuild/wBuild.snakefile" 
 
+## ADD tmp/ DIR
+tmpdir = config["ROOT"] + '/' + config["DATASET_NAME"] + '/tmp'
+config["tmpdir"] = tmpdir
+if not os.path.exists(tmpdir+'/AberrantExpression'):
+    os.makedirs(tmpdir+'/AberrantExpression')
 
-## Do not delete this, needed in mergeCounts.R
-config["outrider_all"], _ = parser.getOutriderIds()
+# get group subsets
+config['outrider_all'] = parser.outrider_all
+config['outrider_filtered'] = parser.outrider_filtered
 
 rule all:
     input: rules.Index.output, htmlOutputPath + "/aberrant_expression_readme.html"
     output: touch(tmpdir + "/aberrant_expression.done")
 
 rule count:
-    input: htmlOutputPath + "/Scripts_Counting_Overview.html"
-
-rule filter_counts:
-    input: expand(parser.getProcDataDir() + "/{annotation}/counts/{dataset}/filtered_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
-
-rule outrider:
-    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/ods.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
+    input: expand(parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/total_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
 
 rule counting_results:
-    input: expand(htmlOutputPath + "/Counting/{annotation}/CountingSummary_{dataset}.html", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
+    input: htmlOutputPath + "/Scripts_Counting_AllDatasets.html"
+
+rule outrider:
+    input: expand(parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
 
 rule outrider_results:
-    input: expand(parser.getProcResultsDir() + "/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
+    input: expand(parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_all)
 
+rule read_count_qc:
+    input:
+        bamfiles = lambda wildcards: parser.getFilePaths(wildcards.dataset, isRNA=True),
+    output:
+        qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/qc.tsv"
+    params:
+        sample_ids = lambda wildcards: parser.outrider_all[wildcards.dataset],
+        chrNames = "|".join(expand("{chr}", chr=config["chr_names"]))
+    run:
+        shell(f'echo "sampleID\trecord_count" > {output.qc}')
+        for i in range(len(params.sample_ids)):
+            sampleID = params.sample_ids[i]
+            cmd = f'samtools idxstats {input.bamfiles[i]} | grep -E "^({params.chrNames})" | cut -f3 | paste -sd+ - | bc'
+            shell(f'count=`{cmd}`; echo "{sampleID}\t$count" >> {output.qc}')
 
-   
 ### RULEGRAPH  
 ### rulegraph only works without print statements. Call <snakemake produce_graphs> for producing output
 
