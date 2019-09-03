@@ -23,7 +23,7 @@ suppressPackageStartupMessages({
 
 txdb <- loadDb(snakemake@input$txdb)
 txdb <- keepStandardChromosomes(txdb)
-seqlevelsStyle(txdb) <- snakemake@config$CHROMOSOME_FORMAT_rna
+seqlevelsStyle(txdb) <- snakemake@config$CHROMOSOME_FORMAT
 count_object <- exonsBy(txdb, by = "gene")
 
 saveRDS(count_object, snakemake@output$count_object)
