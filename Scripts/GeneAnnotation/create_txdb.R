@@ -17,7 +17,7 @@ suppressPackageStartupMessages({
 })
 
 txdb <- makeTxDbFromGFF(snakemake@input$gtf)
-seqlevelsStyle(txdb) <- snakemake@config$CHROMOSOME_FORMAT_rna
+seqlevelsStyle(txdb) <- snakemake@config$CHROMOSOME_FORMAT
 txdb <- keepStandardChromosomes(txdb)
 
 tmpFile <- tempfile()
