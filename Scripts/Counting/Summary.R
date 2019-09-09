@@ -4,7 +4,7 @@
 #' wb:
 #'  input: 
 #'    - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
-#'    - qc: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/qc.tsv"`'
+#'    - qc: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/qc.tsv"`'
 #'  output:
 #'   - wBhtml: '`sm config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html"`'
 #'  type: noindex

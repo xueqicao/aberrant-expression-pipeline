@@ -4,9 +4,8 @@
 #' wb:
 #'  input:
 #'   - txdb: '`sm parser.getProcDataDir() + "/{annotation}/txdb.db"`'
-#'   - gene_name_mapping: '`sm parser.getProcDataDir() + "/{annotation}/gene_name_mapping.Rds"`'
 #'  output:
-#'   - count_object: '`sm parser.getProcDataDir() + "/{annotation}/count_ranges.Rds"`'
+#'   - count_object: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/count_ranges.Rds"`'
 #'  type: script
 #'---
 
