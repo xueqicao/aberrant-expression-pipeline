@@ -13,6 +13,10 @@ tmpdir = config["ROOT"] + '/' + config["DATASET_NAME"] + '/tmp'
 config["tmpdir"] = tmpdir
 if not os.path.exists(tmpdir+'/AberrantExpression'):
     os.makedirs(tmpdir+'/AberrantExpression')
+# remove dummy files if they exist
+done = tmpdir + "/aberrant_expression.done"
+if os.path.exists(done):
+    os.remove(done)
 
 # get group subsets
 config['outrider_all'] = parser.outrider_all
@@ -20,10 +24,10 @@ config['outrider_filtered'] = parser.outrider_filtered
 
 rule all:
     input: rules.Index.output, htmlOutputPath + "/aberrant_expression_readme.html"
-    output: touch(tmpdir + "/aberrant_expression.done")
+    output: touch(done)
 
 rule count:
-    input: expand(parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/total_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
+    input: expand(parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/total_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)
 
 rule counting_results:
     input: htmlOutputPath + "/Scripts_Counting_AllDatasets.html"
@@ -38,7 +42,7 @@ rule read_count_qc:
     input:
         bamfiles = lambda wildcards: parser.getFilePaths(wildcards.dataset, isRNA=True),
     output:
-        qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{dataset}/qc.tsv"
+        qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/qc.tsv"
     params:
         sample_ids = lambda wildcards: parser.outrider_all[wildcards.dataset],
         chrNames = "|".join(expand("{chr}", chr=config["chr_names"]))
