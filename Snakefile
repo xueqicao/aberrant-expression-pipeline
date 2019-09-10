@@ -40,7 +40,7 @@ rule outrider_results:
 
 rule read_count_qc:
     input:
-        bamfiles = lambda wildcards: parser.getFilePaths(wildcards.dataset, isRNA=True),
+        bamfiles = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], assay='rna_assay'),
     output:
         qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/qc.tsv"
     params:
@@ -50,7 +50,8 @@ rule read_count_qc:
         shell(f'echo "sampleID\trecord_count" > {output.qc}')
         for i in range(len(params.sample_ids)):
             sampleID = params.sample_ids[i]
-            cmd = f'samtools idxstats {input.bamfiles[i]} | grep -E "^({params.chrNames})" | cut -f3 | paste -sd+ - | bc'
+            bamfile = input.bamfiles[i]
+            cmd = f'samtools idxstats {bamfile} | grep -E "^({params.chrNames})" | cut -f3 | paste -sd+ - | bc'
             shell(f'count=`{cmd}`; echo "{sampleID}\t$count" >> {output.qc}')
 
 ### RULEGRAPH  
