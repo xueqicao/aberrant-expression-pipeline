@@ -49,7 +49,7 @@ message("outrider fitting finished")
 # do it if you have time and a big memory 
 # plotQQ(ods, global=TRUE)
 
-row.names(ods) <- rowData(ods)$gene_name_unique
+row.names(ods) <- rowData(ods)$gene_name
 
 op <- snakemake@output$ods
 
