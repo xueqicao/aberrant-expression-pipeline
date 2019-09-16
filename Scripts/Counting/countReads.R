@@ -3,7 +3,7 @@
 #' author: Michaela Mueller
 #' wb:
 #'  input:
-#'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, assay="rna_assay") `'
+#'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, assay="RNA_ASSAY") `'
 #'   - count_ranges: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/count_ranges.Rds" `'
 #'  output:
 #'   - counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
@@ -25,13 +25,13 @@ suppressPackageStartupMessages({
 # Get strand specific information from sample annotation
 sampleID <- snakemake@wildcards$sampleID
 sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
-sample_anno <- sample_anno[get(snakemake@config$rna_assay) == sampleID]
+sample_anno <- sample_anno[RNA_ASSAY == sampleID]
 
-count_mode <- sample_anno[, get(snakemake@config$count_mode_column)]
-paired_end <- sample_anno[, get(snakemake@config$paired_end_column)]
-inter_feature <- sample_anno[, get(snakemake@config$inter_feature_column)]
-inter_feature <- ! inter_feature # inter_feature = FALSE does not allow overlaps
-strand <- sample_anno[, get(snakemake@config$strand_column)]
+count_mode <- sample_anno[, "COUNT_MODE"]
+paired_end <- sample_anno[, "PAIRED_END"]
+overlap <- sample_anno[, "COUNT_OVERLAPS"]
+inter_feature <- ! overlap # inter_feature = FALSE does not allow overlaps
+strand <- sample_anno[, "STRAND"]
 
 # infer preprocessing and strand info
 preprocess_reads <- NULL
@@ -40,6 +40,7 @@ if (strand == "yes") {
 } else if (strand == "no"){
   strand_spec <- F
 } else if (strand == "reverse") {
+  # set preprocess function for later
   preprocess_reads <- invertStrand
   strand_spec <- T
 } else {
@@ -49,6 +50,8 @@ if (strand == "yes") {
 # read files
 bam_file <- BamFile(snakemake@input$sample_bam, yieldSize = 2e6)
 count_ranges <- readRDS(snakemake@input$count_ranges)
+# set chromosome style
+seqlevelsStyle(count_ranges) <- seqlevelsStyle(bam_file)
 
 # show info
 message(paste("input:", snakemake@input$features))
