@@ -1,24 +1,42 @@
 #'---
-#' title: Create GeneID-GeneName mapping
+#' title: Create txdb from GTF
 #' author: mumichae
 #' wb:
 #'  input:
 #'   - gtf: '`sm lambda wildcards: parser.getGeneAnnotationFile(wildcards.annotation) `'
 #'  output:
+#'   - txdb: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/txdb.db"`'
+#'   - count_ranges: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/count_ranges.Rds" `'
 #'   - gene_name_mapping: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/gene_name_mapping.Rds"`'
 #'  type: script
 #'---
 
-saveRDS(snakemake,  paste0(snakemake@config$tmpdir, "/AberrantExpression/gene_map.snakemake")  )
-# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/gene_map.snakemake") )
+saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/annotation.snakemake") )
+# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/annotation.snakemake") )
 
 suppressPackageStartupMessages({
+  library(GenomicFeatures)
   library(rtracklayer)
   library(data.table)
   library(magrittr)
   library(tidyr)
 })
 
+
+## Create txdb
+txdb <- makeTxDbFromGFF(snakemake@input$gtf)
+txdb <- keepStandardChromosomes(txdb)
+
+tmpFile <- tempfile()
+saveDb(txdb, tmpFile)
+R.utils::copyFile(tmpFile, snakemake@output$txdb, overwrite=TRUE)
+
+# save count ranges
+count_ranges <- exonsBy(txdb, by = "gene")
+saveRDS(count_ranges, snakemake@output$count_ranges)
+
+
+## Create Gene Name mapping
 gtf_dt <- import(snakemake@input$gtf) %>% as.data.table
 if (!"gene_name" %in% colnames(gtf_dt)) {
   gtf_dt[gene_name := gene_id]

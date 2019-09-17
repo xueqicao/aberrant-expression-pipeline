@@ -1,9 +1,9 @@
 ### SNAKEFILE ABERRANT EXPRESSION
 import os
-from config_parser import ConfigHelper
+import drop
 
 #print("In ABERRANT EXPRESSION", config)
-parser = ConfigHelper(config)
+parser = drop.config(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
 htmlOutputPath = config["htmlOutputPath"]
 include: os.getcwd() + "/.wBuild/wBuild.snakefile" 
@@ -14,7 +14,7 @@ config["tmpdir"] = tmpdir
 if not os.path.exists(tmpdir+'/AberrantExpression'):
     os.makedirs(tmpdir+'/AberrantExpression')
 # remove dummy files if they exist
-done = tmpdir + "/aberrant_expression.done"
+done = tmpdir + "/AE.done"
 if os.path.exists(done):
     os.remove(done)
 
@@ -40,7 +40,7 @@ rule outrider_results:
 
 rule read_count_qc:
     input:
-        bamfiles = lambda wildcards: parser.getFilePaths(wildcards.dataset, isRNA=True),
+        bamfiles = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], assay='RNA_ASSAY'),
     output:
         qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/qc.tsv"
     params:
@@ -50,7 +50,8 @@ rule read_count_qc:
         shell(f'echo "sampleID\trecord_count" > {output.qc}')
         for i in range(len(params.sample_ids)):
             sampleID = params.sample_ids[i]
-            cmd = f'samtools idxstats {input.bamfiles[i]} | grep -E "^({params.chrNames})" | cut -f3 | paste -sd+ - | bc'
+            bamfile = input.bamfiles[i]
+            cmd = f'samtools idxstats {bamfile} | grep -E "^({params.chrNames})" | cut -f3 | paste -sd+ - | bc'
             shell(f'count=`{cmd}`; echo "{sampleID}\t$count" >> {output.qc}')
 
 ### RULEGRAPH  
