@@ -6,6 +6,8 @@
 #'   - gtf: '`sm lambda wildcards: parser.getGeneAnnotationFile(wildcards.annotation) `'
 #'  output:
 #'   - txdb: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/txdb.db"`'
+#'   - count_ranges: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/count_ranges.Rds" `'
+#'   - gene_name_mapping: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/gene_name_mapping.Rds"`'
 #'  type: script
 #'---
 
@@ -30,8 +32,8 @@ saveDb(txdb, tmpFile)
 R.utils::copyFile(tmpFile, snakemake@output$txdb, overwrite=TRUE)
 
 # save count ranges
-count_object <- exonsBy(txdb, by = "gene")
-saveRDS(count_object, snakemake@output$count_object)
+count_ranges <- exonsBy(txdb, by = "gene")
+saveRDS(count_ranges, snakemake@output$count_ranges)
 
 
 ## Create Gene Name mapping
