@@ -1,29 +1,18 @@
-### SNAKEFILE ABERRANT EXPRESSION
-import os
 import drop
 
 parser = drop.config(config)
-config = parser.config # needed if you dont provide the wbuild.yaml as configfile
+config = parser.config
 htmlOutputPath = config["htmlOutputPath"]
-include: os.getcwd() + "/.wBuild/wBuild.snakefile" 
 
 ## ADD tmp/ DIR
 tmpdir = config["ROOT"] + '/' + config["DATASET_NAME"] + '/tmp'
 config["tmpdir"] = tmpdir
 if not os.path.exists(tmpdir+'/AberrantExpression'):
     os.makedirs(tmpdir+'/AberrantExpression')
-# remove dummy files if they exist
-done = tmpdir + "/AE.done"
-if os.path.exists(done):
-    os.remove(done)
 
 # get group subsets
 config['outrider_all'] = parser.outrider_all
 config['outrider_filtered'] = parser.outrider_filtered
-
-rule all:
-    input: rules.Index.output, htmlOutputPath + "/aberrant_expression_readme.html"
-    output: touch(done)
 
 rule count:
     input: expand(parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/total_counts.Rds", annotation=list(config["GENE_ANNOTATION"].keys()), dataset=parser.outrider_filtered)

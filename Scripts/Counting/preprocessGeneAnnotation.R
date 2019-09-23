@@ -1,5 +1,5 @@
 #'---
-#' title: Create txdb from GTF
+#' title: Preprocess Gene Annotations
 #' author: mumichae
 #' wb:
 #'  input:
