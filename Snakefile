@@ -22,7 +22,11 @@ config['outrider_all'] = parser.outrider_all
 config['outrider_filtered'] = parser.outrider_filtered
 
 rule all:
-    input: rules.Index.output, htmlOutputPath + "/aberrant_expression_readme.html"
+    input: 
+        rules.Index.output, htmlOutputPath + "/aberrant_expression_readme.html",
+        expand(parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv",
+	    annotation=list(config["GENE_ANNOTATION"].keys()),
+	    dataset=parser.outrider_filtered)
     output: touch(done)
 
 rule count:
