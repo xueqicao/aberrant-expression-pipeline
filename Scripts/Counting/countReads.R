@@ -27,11 +27,11 @@ sampleID <- snakemake@wildcards$sampleID
 sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
 sample_anno <- sample_anno[RNA_ASSAY == sampleID]
 
-count_mode <- sample_anno[, COUNT_MODE]
-paired_end <- sample_anno[, PAIRED_END]
-overlap <- sample_anno[, COUNT_OVERLAPS]
+strand <- sample_anno$STRAND
+count_mode <- sample_anno$COUNT_MODE
+paired_end <- sample_anno$PAIRED_END
+overlap <- sample_anno$COUNT_OVERLAPS
 inter_feature <- ! overlap # inter_feature = FALSE does not allow overlaps
-strand <- sample_anno[, STRAND]
 
 # infer preprocessing and strand info
 preprocess_reads <- NULL
