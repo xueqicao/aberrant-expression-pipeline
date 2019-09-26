@@ -5,7 +5,7 @@ config = parser.config
 htmlOutputPath = config["htmlOutputPath"]
 
 ## ADD tmp/ DIR
-tmpdir = config["ROOT"] + '/' + config["DATASET_NAME"] + '/tmp'
+tmpdir = config["ROOT"] + '/tmp'
 config["tmpdir"] = tmpdir
 if not os.path.exists(tmpdir+'/AberrantExpression'):
     os.makedirs(tmpdir+'/AberrantExpression')

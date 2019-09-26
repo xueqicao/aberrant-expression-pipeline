@@ -7,8 +7,7 @@ config = parser.config # needed if you dont provide the wbuild.yaml as configfil
 htmlOutputPath = config["htmlOutputPath"]
 include: os.getcwd() + "/.wBuild/wBuild.snakefile" 
 
-## ADD tmp/ DIR
-tmpdir = config["ROOT"] + '/' + config["DATASET_NAME"] + '/tmp'
+tmpdir = os.path.join(config["ROOT"], 'tmp')
 config["tmpdir"] = tmpdir
 if not os.path.exists(tmpdir+'/AberrantExpression'):
     os.makedirs(tmpdir+'/AberrantExpression')
