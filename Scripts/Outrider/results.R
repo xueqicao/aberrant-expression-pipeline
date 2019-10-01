@@ -26,14 +26,13 @@ suppressPackageStartupMessages({
 ods <- readRDS(snakemake@input$ods)
 res <- OUTRIDER::results(ods, all = TRUE)
 res[, FC := round(2^l2fc, 2)]
-res[, geneID := toupper(geneID)]
-#res <- add_gene_type(res, gene_name_col = 'geneID')
-#saveRDS(res[,.(geneID, sampleID, pValue, padjust, zScore, l2fc, rawcounts, normcounts, meanCorrected, theta, aberrant, AberrantBySample, AberrantByGene, padj_rank, FC, gene_type)], snakemake@output$results_all)
-saveRDS(res[,.(geneID, sampleID, pValue, padjust, zScore, l2fc, rawcounts, normcounts, meanCorrected, theta, aberrant, AberrantBySample, AberrantByGene, padj_rank, FC)], snakemake@output$results_all)
+
+# Save all the results and significant ones
+saveRDS(res, snakemake@output$results_all)
 
 # Subset to significant results
-res <- res[padjust <= .05]
-#res <- add_all_gene_info(res, gene_name_col = 'geneID', dis_genes = F, gene_type = F)  # gene_type already added before
+res <- res[padjust <= snakemake@config$outrider_padjCutoff & 
+               abs(zScore) > snakemake@config$outrider_zscoreCutoff]
 
 # Save results 
 fwrite(res, snakemake@output$results, sep = "\t", quote = F)

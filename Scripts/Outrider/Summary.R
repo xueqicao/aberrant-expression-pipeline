@@ -66,7 +66,7 @@ ods_sub = ods[ bcv_sub, ]
 
 #' ### BCV - Biological Cofficient of Variation
 # function to calculate BCV before autoencoder
-estimateThetaWithoutAutoCorrect = function(ods){
+estimateThetaWithoutAutoCorrect <- function(ods){
   
   ods1 <- OutriderDataSet(countData=counts(ods), colData=colData(ods))
   # use rowMeans as expected means
