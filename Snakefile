@@ -15,6 +15,8 @@ done = tmpdir + "/AE.done"
 if os.path.exists(done):
     os.remove(done)
 
+AE_ROOT = pathlib.Path(drop.__file__).parent / "modules/aberrant-expression-pipeline"
+
 # get group subsets
 config['outrider_all'] = parser.outrider_all
 config['outrider_filtered'] = parser.outrider_filtered
@@ -31,17 +33,13 @@ rule all:
 
 rule read_count_qc:
     input:
-        bamfiles = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], assay='RNA_ASSAY'),
+        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], assay='RNA_ASSAY'),
+        ucsc2ncbi = AE_ROOT / "resource/chr_UCSC_NCBI.txt",
+        script = AE_ROOT / "Scripts/Counting/bamfile_coverage.sh"
     output:
         qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/qc.tsv"
     params:
-        sample_ids = lambda wildcards: parser.outrider_all[wildcards.dataset],
-        chrNames = "|".join(expand("{chr}", chr=config["chr_names"]))
-    run:
-        shell(f'echo "sampleID\trecord_count" > {output.qc}')
-        for i in range(len(params.sample_ids)):
-            sampleID = params.sample_ids[i]
-            bamfile = input.bamfiles[i]
-            cmd = f'samtools idxstats {bamfile} | grep -E "^({params.chrNames})" | cut -f3 | paste -sd+ - | bc'
-            shell(f'count=`{cmd}`; echo "{sampleID}\t$count" >> {output.qc}')
+        sample_ids = lambda wildcards: parser.outrider_all[wildcards.dataset]
+    shell:
+        "{input.script} {input.ucsc2ncbi} {output.qc} {params.sample_ids} {input.bam_files}"
 
