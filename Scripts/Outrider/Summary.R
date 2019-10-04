@@ -26,42 +26,44 @@ suppressPackageStartupMessages({
     library(ggthemes)
 })
 
+# used for most plots
+dataset_title <- paste("Dataset:", snakemake@wildcards$dataset)
 
 #' ## Read the ods object
 ods <- readRDS(snakemake@input$ods)
-# Number of samples and genes
-dim(ods)
+#' Number of samples: `r ncol(ods)`
+#' Number of genes: `r nrow(ods)`
 
 
 #' ## Visualize
 #' ### Parameters
 plotEncDimSearch(ods) +
-  theme_cowplot() +
-  background_grid() +
-  scale_color_brewer(palette = "Set1")
+    labs(title = dataset_title) +
+    theme_cowplot() +
+    background_grid() +
+    scale_color_brewer(palette = "Set1")
 
 
 #' ### Aberrant samples
-plotAberrantPerSample(ods, main = snakemake@wildcards$dataset)
+plotAberrantPerSample(ods, main = plot_title)
 
 
 #' ### Batch correction
-#+ heatmap1, fig.height=8, fig.width=8
-plotCountCorHeatmap(ods, normalized = FALSE, main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
-plotCountCorHeatmap(ods, normalized = TRUE, main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
+#+ countCorHeatmap, fig.height=8, fig.width=8
+plotCountCorHeatmap(ods, normalized = FALSE, 
+                    main = paste0('Raw Counts (', dataset_title, ')'))
+plotCountCorHeatmap(ods, normalized = TRUE, 
+                    main = paste0('Normalized Counts (', dataset_title, ')'))
 
 
-#' ### gene sample heatmap
-# subset the genes with top BCV for gene sample heatmap 
-bcv = 1/sqrt( theta( ods ))
-bcv_sub = bcv > quantile( bcv, probs = c(0.95))
-ods_sub = ods[ bcv_sub, ]
-
-# #+ heatmap2, fig.height=15, fig.width=6
-# plotCountGeneSampleHeatmap(ods_sub, normalized = FALSE, nGenes = nrow(ods_sub),
-#                           main = paste('Raw Counts (', snakemake@wildcards$dataset, ')'))
-#plotCountGeneSampleHeatmap(ods_sub, normalized = TRUE, nGenes = nrow(ods_sub),
-#                           main = paste('Normalized Counts (', snakemake@wildcards$dataset, ')'))
+#' ### Expression by gene per sample
+#+ geneSampleHeatmap, fig.height=15, fig.width=6
+plotCountGeneSampleHeatmap(ods, normalized = FALSE, nGenes = 50,
+                           main = paste0('Raw Counts (', dataset_title, ')'),
+                           bcvQuantile = .95, show_names = 'row')
+plotCountGeneSampleHeatmap(ods, normalized = TRUE, nGenes = 50,
+                           main = paste0('Normalized Counts (',dataset_title,')'),
+                           bcvQuantile = .95, show_names = 'row')
 
 
 #' ### BCV - Biological Cofficient of Variation
@@ -77,11 +79,18 @@ estimateThetaWithoutAutoCorrect <- function(ods){
   return(theta(ods1))
 }
 
+before <- data.table(when = "Before",
+                     BCV = 1/sqrt(estimateThetaWithoutAutoCorrect(ods)))
+after <- data.table(when = "After", BCV = 1/sqrt( theta( ods )))
+bcv_dt <- rbind(before, after)
+
 # boxplot of BCV Before and After Autoencoder
-boxplot( 1/sqrt( estimateThetaWithoutAutoCorrect( ods )) ,1/sqrt( theta( ods )), 
-         names = c("Before","After"),
-         main = paste("BCV - Before and After Autoencoder (",snakemake@wildcards$dataset, ')'),
-         ylab = "BCV")
+ggplot(bcv_dt, aes(when, BCV)) +
+    geom_boxplot() +
+    theme_clean(base_size = 16) +
+    labs(x = "",
+         title = paste0("BCV - Before and After Autoencoder (", 
+                        data_set_title, ")"))
 
 
 #' ## Results

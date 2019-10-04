@@ -4,7 +4,7 @@
 #' wb:
 #'  input: 
 #'    - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
-#'    - qc: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/qc.tsv"`'
+#'    - qc: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"`'
 #'  output:
 #'   - wBhtml: '`sm config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html"`'
 #'  type: noindex
@@ -19,7 +19,6 @@ suppressPackageStartupMessages({
   library(SummarizedExperiment)
   library(GenomicAlignments)
   library(ggplot2)
-  #library(ggbeeswarm)
   library(ggthemes)
   library(cowplot)
   library(data.table)
@@ -30,39 +29,68 @@ suppressPackageStartupMessages({
 ods <- readRDS(snakemake@input$ods)
 cnts_mtx <- counts(ods, normalized = F)
 
+#' Number of samples: `ncol(ods)`
+#' 
 #' # Count Quality Control
 #' 
 #' Compare number of records vs. read counts
 #' 
-qc_dt <- left_join(fread(snakemake@input$qc),
+bam_coverage <- fread(snakemake@input$qc)
+coverage_dt <- left_join(bam_coverage,
                    data.table(sampleID = colnames(ods),
                               read_count = colSums(cnts_mtx)),
                    by = "sampleID") %>% as.data.table
-qc_dt[, counted_frac := read_count/record_count]
-setorder(qc_dt, "counted_frac")
-qc_dt[, rank := .I]
-
-ggplot(qc_dt, aes(rank, counted_frac)) +
-  geom_point() +
-  theme_cowplot() +
-  background_grid() +
-  labs(title = "Quality Control: Obtained Read Counts",
-       x = "Sample Rank", 
-       y = "Percent Reads Counted")
-
-#' # Size Factors
-#' 
+# read count
+setorder(coverage_dt, "read_count")
+coverage_dt[, count_rank := .I]
+# ratio
+coverage_dt[, counted_frac := read_count/record_count]
+setorder(coverage_dt, "counted_frac")
+coverage_dt[, frac_rank := .I]
+# size factors 
 ods <- estimateSizeFactors(ods)
-sample_dt <- data.table(sample_id = colnames(ods), size_factors = sizeFactors(ods))
-setorder(sample_dt, size_factors)
-sample_dt[, rank := 1:.N]
-ggplot(sample_dt, aes(rank, size_factors)) +
+coverage_dt[, size_factors := sizeFactors(ods)]
+setorder(coverage_dt, size_factors)
+coverage_dt[, sf_rank := 1:.N]
+
+p_depth <- ggplot(coverage_dt, aes(count_rank, read_count)) +
+    geom_point() +
+    theme_cowplot() +
+    background_grid() +
+    labs(title = "Obtained Read Counts",
+         x = "Sample Rank", 
+         y = "Reads Counted") +
+    ylim(c(0,NA))
+
+p_frac <- ggplot(coverage_dt, aes(frac_rank, counted_frac)) +
+    geom_point() +
+    theme_cowplot() +
+    background_grid() +
+    labs(title = "Obtained Read Count Ratio",
+       x = "Sample Rank", 
+       y = "Percent Reads Counted") +
+   ylim(c(0,NA))
+
+p_sf <- ggplot(coverage_dt, aes(sf_rank, size_factors)) +
   geom_point() +
   ylim(c(0,NA)) +
-  theme_cowplot() +
+    theme_cowplot() +
   background_grid() +
-  labs(title = paste('Size Factors', snakemake@wildcards$dataset),
-       x = 'Sample Rank', y = 'Size Factors')
+  labs(title = 'Size Factors', x = 'Sample Rank', y = 'Size Factors')
+
+p_sf_cov <- ggplot(coverage_dt, aes(read_count, size_factors)) +
+    geom_point() +
+    ylim(c(0,NA)) +
+    theme_cowplot() +
+    background_grid() +
+    labs(title = 'Size Factors vs. Read Count Ratio',
+         x = 'Read Count Ratio', y = 'Size Factors')
+
+#+ QC, fig.height=6, fig.width=12
+plot_grid(p_depth, p_frac)
+
+#+ sizeFactors, fig.height=6, fig.width=12
+plot_grid(p_sf, p_sf_cov)
 
 
 #' # Filtering
@@ -91,20 +119,27 @@ p_hist <- ggplot(summary_dt, aes(x = median_counts, fill = filter)) +
   theme(legend.position = "none")
 
 p_dens <- ggplot(summary_dt, aes(x = median_counts, col = filter)) +
-  geom_density(aes(y=binwidth * ..count..)) +
+  geom_density(aes(y=binwidth * ..count..), size = 1.2) +
   scale_x_log10() +
   labs(x = "Mean counts per gene", y = "Frequency") +
   guides(col = guide_legend(title = NULL)) +
   scale_color_brewer(palette = "Paired") +
   theme_cowplot() +
-  theme(legend.position = "top")
+  theme(legend.position = "top",
+        legend.justification="center",
+       legend.background = element_rect(color = NA))
 
-#+ meanCounts, fig.height=7, fig.width=14
+#+ meanCounts, fig.height=6, fig.width=12
 plot_grid(p_hist, p_dens)
 
-#' Expressed genes per sample
 #+ expressedGenes, fig.height=7, fig.width=9
 plotExpressedGenes(ods) +
   theme_cowplot() +
-  background_grid()
+  background_grid(major = "y")
 
+expressed_genes <- as.data.table(colData(ods))
+expressed_genes <- expressed_genes[, .(expressedGenes, unionExpressedGenes,
+                    intersectionExpressedGenes, passedFilterGenes,
+                    expressedGenesRank)]
+#' Rank 1: `r expressed_genes[expressedGenesRank == 1]`
+#' Last rank: `r expressed_genes[expressedGenesRank == .N]`
