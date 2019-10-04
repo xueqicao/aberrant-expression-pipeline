@@ -33,11 +33,11 @@ rule all:
 
 rule read_count_qc:
     input:
-        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], assay='RNA_ASSAY'),
+        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], assay='RNA_ID'),
         ucsc2ncbi = AE_ROOT / "resource/chr_UCSC_NCBI.txt",
         script = AE_ROOT / "Scripts/Counting/bamfile_coverage.sh"
     output:
-        qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/qc.tsv"
+        qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"
     params:
         sample_ids = lambda wildcards: parser.outrider_all[wildcards.dataset]
     shell:

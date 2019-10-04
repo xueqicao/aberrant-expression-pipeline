@@ -57,8 +57,8 @@ rowData(total_counts) <- row_data
 # Add sample annotation data (colData)
 sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
 col_data <- data.table(colnames(total_counts))
-names(col_data) <- "RNA_ASSAY"
-col_data <- left_join(col_data, sample_anno, by = "RNA_ASSAY")
+names(col_data) <- "RNA_ID"
+col_data <- left_join(col_data, sample_anno, by = "RNA_ID")
 rownames(col_data) <- col_data[,1]
 colData(total_counts) <- as(col_data, "DataFrame")
 

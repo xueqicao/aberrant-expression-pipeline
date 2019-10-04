@@ -11,20 +11,20 @@
 #'  type: script
 #'---
 
-#+ echo=F
+print("Hello")
 saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_results.snakemake"))
 # snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_results.snakemake"))
 
 suppressPackageStartupMessages({
-    library(OUTRIDER)
-    library(SummarizedExperiment)
-    library(ggplot2)
-    library(data.table)
     library(dplyr)
+    library(data.table)
+    library(ggplot2)
+    library(SummarizedExperiment)
+    library(OUTRIDER)
 })
 
 ods <- readRDS(snakemake@input$ods)
-res <- OUTRIDER::results(ods, all = TRUE)
+res <- results(ods, all = TRUE)
 res[, FC := round(2^l2fc, 2)]
 
 # Save all the results and significant ones
