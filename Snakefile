@@ -1,6 +1,7 @@
 ### SNAKEFILE ABERRANT EXPRESSION
 import os
 import drop
+import pathlib
 
 parser = drop.config(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
@@ -25,6 +26,11 @@ rule all:
     input: 
         rules.Index.output, config["htmlOutputPath"] + "/aberrant_expression_readme.html",
         expand(
+            config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html",
+            annotation=list(config["GENE_ANNOTATION"].keys()),
+            dataset=parser.outrider_filtered
+        ),
+        expand(
             parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv",
             annotation=list(config["GENE_ANNOTATION"].keys()),
             dataset=parser.outrider_filtered
@@ -33,7 +39,7 @@ rule all:
 
 rule read_count_qc:
     input:
-        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], assay='RNA_ID'),
+        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], file_type='RNA_BAM_FILE'),
         ucsc2ncbi = AE_ROOT / "resource/chr_UCSC_NCBI.txt",
         script = AE_ROOT / "Scripts/Counting/bamfile_coverage.sh"
     output:

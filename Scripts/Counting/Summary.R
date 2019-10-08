@@ -29,7 +29,7 @@ suppressPackageStartupMessages({
 ods <- readRDS(snakemake@input$ods)
 cnts_mtx <- counts(ods, normalized = F)
 
-#' Number of samples: `ncol(ods)`
+#' Number of samples: `r ncol(ods)`
 #' 
 #' # Count Quality Control
 #' 
@@ -71,6 +71,9 @@ p_frac <- ggplot(coverage_dt, aes(frac_rank, counted_frac)) +
        y = "Percent Reads Counted") +
    ylim(c(0,NA))
 
+#+ QC, fig.height=6, fig.width=12
+plot_grid(p_depth, p_frac)
+
 p_sf <- ggplot(coverage_dt, aes(sf_rank, size_factors)) +
   geom_point() +
   ylim(c(0,NA)) +
@@ -86,12 +89,8 @@ p_sf_cov <- ggplot(coverage_dt, aes(read_count, size_factors)) +
     labs(title = 'Size Factors vs. Read Count Ratio',
          x = 'Read Count Ratio', y = 'Size Factors')
 
-#+ QC, fig.height=6, fig.width=12
-plot_grid(p_depth, p_frac)
-
 #+ sizeFactors, fig.height=6, fig.width=12
 plot_grid(p_sf, p_sf_cov)
-
 
 #' # Filtering
 quant <- .95
@@ -101,14 +100,14 @@ filter_mtx <- list(
   min_1 = cnts_mtx[rowQuantiles(cnts_mtx, probs = quant) > 1, ],
   min_10 = cnts_mtx[rowQuantiles(cnts_mtx, probs = quant) > 10, ]
 )
-summary_dt <- lapply(names(filter_mtx), function(filter_name) {
+filter_dt <- lapply(names(filter_mtx), function(filter_name) {
   mtx <- filter_mtx[[filter_name]]
   data.table(gene_ID = rownames(mtx), median_counts = rowMeans(mtx), filter = filter_name)
 }) %>% rbindlist
-summary_dt[, filter := factor(filter, levels = c('all', 'passed_FPKM', 'min_1', 'min_10'))]
+filter_dt[, filter := factor(filter, levels = c('all', 'passed_FPKM', 'min_1', 'min_10'))]
 
 binwidth <- .2
-p_hist <- ggplot(summary_dt, aes(x = median_counts, fill = filter)) +
+p_hist <- ggplot(filter_dt, aes(x = median_counts, fill = filter)) +
   geom_histogram(binwidth = binwidth) +
   scale_x_log10() +
   facet_wrap(.~filter) +
@@ -118,7 +117,7 @@ p_hist <- ggplot(summary_dt, aes(x = median_counts, fill = filter)) +
   theme_cowplot() +
   theme(legend.position = "none")
 
-p_dens <- ggplot(summary_dt, aes(x = median_counts, col = filter)) +
+p_dens <- ggplot(filter_dt, aes(x = median_counts, col = filter)) +
   geom_density(aes(y=binwidth * ..count..), size = 1.2) +
   scale_x_log10() +
   labs(x = "Mean counts per gene", y = "Frequency") +
@@ -141,5 +140,15 @@ expressed_genes <- as.data.table(colData(ods))
 expressed_genes <- expressed_genes[, .(expressedGenes, unionExpressedGenes,
                     intersectionExpressedGenes, passedFilterGenes,
                     expressedGenesRank)]
-#' Rank 1: `r expressed_genes[expressedGenesRank == 1]`
-#' Last rank: `r expressed_genes[expressedGenesRank == .N]`
+
+#+echo=F
+rank_1 <- expressed_genes[expressedGenesRank == 1]
+#' **Rank 1:**
+#' `r as.character(rank_1$expressedGenes)` expressed genes
+#+echo=F
+rank_n <- expressed_genes[expressedGenesRank == .N]
+#' **Rank `r rank_n$expressedGenesRank`:**  
+#' `r as.character(rank_n$expressedGenes)` expressed genes  
+#' `r as.character(rank_n$unionExpressedGenes)` expressed genes (union)  
+#' `r as.character(rank_n$expressedGenes)` expressed genes (intersection)  
+#' `r as.character(rank_n$expressedGenes)` expressed genes passed filter  

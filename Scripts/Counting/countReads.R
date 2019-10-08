@@ -3,7 +3,7 @@
 #' author: Michaela Mueller
 #' wb:
 #'  input:
-#'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, assay="RNA_ID") `'
+#'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, file_type="RNA_BAM_FILE") `'
 #'   - count_ranges: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/count_ranges.Rds" `'
 #'  output:
 #'   - counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
