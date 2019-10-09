@@ -45,7 +45,7 @@ plotEncDimSearch(ods) +
 
 
 #' ### Aberrant samples
-plotAberrantPerSample(ods, main = plot_title)
+plotAberrantPerSample(ods, main = dataset_title)
 
 
 #' ### Batch correction
@@ -85,12 +85,13 @@ after <- data.table(when = "After", BCV = 1/sqrt( theta( ods )))
 bcv_dt <- rbind(before, after)
 
 # boxplot of BCV Before and After Autoencoder
+#+ BCV, fig.height=12, fig.width=6
 ggplot(bcv_dt, aes(when, BCV)) +
     geom_boxplot() +
     theme_clean(base_size = 16) +
     labs(x = "",
          title = paste0("BCV - Before and After Autoencoder (", 
-                        data_set_title, ")"))
+                        dataset_title, ")"))
 
 
 #' ## Results
