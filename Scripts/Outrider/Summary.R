@@ -31,10 +31,10 @@ dataset_title <- paste("Dataset:", snakemake@wildcards$dataset)
 
 #' ## Read the ods object
 ods <- readRDS(snakemake@input$ods)
-#' Number of samples: `r ncol(ods)`
-#' Number of genes: `r nrow(ods)`
+#' Number of samples: `r ncol(ods)`  
+#' Number of genes: `r nrow(ods)`  
 
-
+#'
 #' ## Visualize
 #' ### Parameters
 plotEncDimSearch(ods) +
@@ -85,7 +85,7 @@ after <- data.table(when = "After", BCV = 1/sqrt( theta( ods )))
 bcv_dt <- rbind(before, after)
 
 # boxplot of BCV Before and After Autoencoder
-#+ BCV, fig.height=12, fig.width=6
+#+ BCV, fig.height=5, fig.width=6
 ggplot(bcv_dt, aes(when, BCV)) +
     geom_boxplot() +
     theme_clean(base_size = 16) +
