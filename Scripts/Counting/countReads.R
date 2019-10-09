@@ -24,7 +24,7 @@ suppressPackageStartupMessages({
 
 # Get strand specific information from sample annotation
 sampleID <- snakemake@wildcards$sampleID
-sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
+sample_anno <- fread(snakemake@config$sampleAnnotation)
 sample_anno <- sample_anno[RNA_ASSAY == sampleID]
 
 strand <- sample_anno$STRAND
