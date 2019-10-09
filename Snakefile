@@ -7,7 +7,7 @@ parser = drop.config(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
 include: config['wBuildPath'] + "/wBuild.snakefile"
 
-tmpdir = os.path.join(config["ROOT"], 'tmp')
+tmpdir = os.path.join(config["root"], 'tmp')
 config["tmpdir"] = tmpdir
 if not os.path.exists(tmpdir+'/AberrantExpression'):
     os.makedirs(tmpdir+'/AberrantExpression')
@@ -27,12 +27,12 @@ rule all:
         rules.Index.output, config["htmlOutputPath"] + "/aberrant_expression_readme.html",
         expand(
             config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html",
-            annotation=list(config["GENE_ANNOTATION"].keys()),
+            annotation=list(config["geneAnnotation"].keys()),
             dataset=parser.outrider_filtered
         ),
         expand(
             parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv",
-            annotation=list(config["GENE_ANNOTATION"].keys()),
+            annotation=list(config["geneAnnotation"].keys()),
             dataset=parser.outrider_filtered
         )
     output: touch(done)

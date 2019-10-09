@@ -28,12 +28,12 @@ ods <- OutriderDataSet(counts)
 txdb <- loadDb(snakemake@input$txdb)
 
 # filter not expressed genes ### Here we filter almost all samples --> zero counts
-ods <- filterExpression(ods, gtfFile=txdb, filter=F, fpkmCutoff=snakemake@config$fpkmCutoff, addExpressedGenes=T)
+ods <- filterExpression(ods, gtfFile=txdb, filter=F, fpkmCutoff=snakemake@config$aberrantExpression$fpkmCutoff, addExpressedGenes=T)
 g <- plotFPKM(ods) + theme_bw(base_size = 14)
 ggsave(snakemake@output$plot, g)
 
 # change row names from gene ID to gene name
-if (snakemake@config$use_gene_names) {
+if (snakemake@config$aberrantExpression$useGeneNames) {
   rownames(ods) <- rowData(ods)$gene_name
 }
 

@@ -31,8 +31,8 @@ res[, FC := round(2^l2fc, 2)]
 saveRDS(res, snakemake@output$results_all)
 
 # Subset to significant results
-res <- res[padjust <= snakemake@config$outrider_padjCutoff & 
-               abs(zScore) > snakemake@config$outrider_zscoreCutoff]
+res <- res[padjust <= snakemake@config$aberrantExpression$padjCutoff & 
+               abs(zScore) > snakemake@config$aberrantExpression$zscoreCutoff]
 
 # Save results 
 fwrite(res, snakemake@output$results, sep = "\t", quote = F)
