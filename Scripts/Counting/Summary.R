@@ -149,6 +149,6 @@ rank_1 <- expressed_genes[expressedGenesRank == 1]
 rank_n <- expressed_genes[expressedGenesRank == .N]
 #' **Rank `r rank_n$expressedGenesRank`:**  
 #' `r as.character(rank_n$expressedGenes)` expressed genes  
-#' `r as.character(rank_n$unionExpressedGenes)` expressed genes (union)  
-#' `r as.character(rank_n$expressedGenes)` expressed genes (intersection)  
-#' `r as.character(rank_n$expressedGenes)` expressed genes passed filter  
+#' `r as.character(rank_n$unionExpressedGenes)` expressed genes (union)
+#' `r as.character(rank_n$intersectionExpressedGenes)` expressed genes (intersection)  
+#' `r as.character(rank_n$passedFilterGenes)` genes passed filter
