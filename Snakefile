@@ -9,7 +9,7 @@ config = parser.config # needed if you dont provide the wbuild.yaml as configfil
 include: config['wBuildPath'] + "/wBuild.snakefile"
 
 AE_ROOT = pathlib.Path(drop.__file__).parent / "modules/aberrant-expression-pipeline"
-TMP_DIR = os.path.join(config["root"], 'tmp')
+TMP_DIR = drop.getTmpDir()
 
 # get group subsets
 config['outrider_all'] = parser.outrider_all
