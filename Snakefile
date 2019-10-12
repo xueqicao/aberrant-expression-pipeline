@@ -5,11 +5,11 @@ import pathlib
 
 parser = drop.config(config)
 config = parser.config # needed if you dont provide the wbuild.yaml as configfile
-
 include: config['wBuildPath'] + "/wBuild.snakefile"
 
-AE_ROOT = pathlib.Path(drop.__file__).parent / "modules/aberrant-expression-pipeline"
-TMP_DIR = drop.getTmpDir()
+METHOD = 'AE'
+SCRIPT_ROOT = drop.getMethodPath(METHOD, link_type='workdir')
+TMP_DIR = config['tmpdir']
 
 # get group subsets
 config['outrider_all'] = parser.outrider_all
@@ -28,13 +28,13 @@ rule all:
             annotation=list(config["geneAnnotation"].keys()),
             dataset=parser.outrider_filtered
         )
-    output: touch(drop.getMethodPath('AE', link_type='final_file', tmp_dir=TMP_DIR))
+    output: touch(drop.getMethodPath(METHOD, link_type='final_file', tmp_dir=TMP_DIR))
 
 rule read_count_qc:
     input:
         bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], file_type='RNA_BAM_FILE'),
-        ucsc2ncbi = AE_ROOT / "resource/chr_UCSC_NCBI.txt",
-        script = AE_ROOT / "Scripts/Counting/bamfile_coverage.sh"
+        ucsc2ncbi = os.path.join(SCRIPT_ROOT, "resource", "chr_UCSC_NCBI.txt"),
+        script = os.path.join(SCRIPT_ROOT, "Scripts", "Counting", "bamfile_coverage.sh")
     output:
         qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"
     params:
@@ -43,15 +43,15 @@ rule read_count_qc:
         "{input.script} {input.ucsc2ncbi} {output.qc} {params.sample_ids} {input.bam_files}"
 
 
-### RULEGRAPH  
-### rulegraph only works without print statements
-
-## For rule rulegraph.. copy configfile in tmp file
+### RULEGRAPH
 import oyaml
-with open(TMP_DIR + '/config.yaml', 'w') as yaml_file:
+
+config_file = drop.getMethodPath(METHOD, link_type='config_file', tmp_dir=TMP_DIR)
+rulegraph_filename = f'{config["htmlOutputPath"]}/{METHOD}_rulegraph'
+
+with open(config_file, 'w') as yaml_file:
     oyaml.dump(config, yaml_file, default_flow_style=False)
 
-rulegraph_filename = config["htmlOutputPath"] + "/AE_rulegraph" # htmlOutputPath + "/" + os.path.basename(os.getcwd()) + "_rulegraph"
 rule produce_rulegraph:
     input:
         expand(rulegraph_filename + ".{fmt}", fmt=["svg", "png"])
@@ -60,7 +60,7 @@ rule create_graph:
     output:
         rulegraph_filename + ".dot"
     shell:
-        "snakemake --configfile " + TMP_DIR + "/config.yaml --rulegraph > {output}"
+        "snakemake --configfile {config_file} --rulegraph > {output}"
 
 rule render_dot:
     input:
@@ -69,4 +69,3 @@ rule render_dot:
         "{prefix}.{fmt,(png|svg)}"
     shell:
         "dot -T{wildcards.fmt} < {input} > {output}"
-
