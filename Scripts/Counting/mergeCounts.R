@@ -5,9 +5,11 @@
 #'  py:
 #'   - |
 #'    def getCountFiles(annotation, dataset):
-#'        ids = parser.outrider_all[dataset]
+#'        ids = parser.outrider_ids[dataset]
 #'        file_stump = parser.getProcDataDir() + f"/aberrant_expression/{annotation}/counts/"
 #'        return expand(file_stump + "{sampleID}.Rds", sampleID=ids)
+#'  params:
+#'    - ids: '`sm parser.outrider_ids`'
 #'  input: 
 #'    - counts: '`sm lambda wildcards: getCountFiles(wildcards.annotation, wildcards.dataset)`'
 #'    - gene_name_mapping: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/gene_name_mapping.Rds"`'
@@ -31,7 +33,7 @@ register(MulticoreParam(snakemake@threads))
 
 # Read counts
 counts_list <- bplapply(snakemake@input$counts, readRDS)
-names <- snakemake@config$outrider_all[[snakemake@wildcards$dataset]]
+names <- snakemake@params$ids[[snakemake@wildcards$dataset]]
 names(counts_list) <- names
 
 message(paste("read", length(counts_list), 'files'))

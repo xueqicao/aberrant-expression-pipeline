@@ -11,46 +11,42 @@ METHOD = 'AE'
 SCRIPT_ROOT = drop.getMethodPath(METHOD, link_type='workdir')
 TMP_DIR = config['tmpdir']
 
-# get group subsets
-config['outrider_all'] = parser.outrider_all
-config['outrider_filtered'] = parser.outrider_filtered
-
 rule all:
     input: 
         rules.Index.output, config["htmlOutputPath"] + "/aberrant_expression_readme.html",
         expand(
             config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html",
             annotation=list(config["geneAnnotation"].keys()),
-            dataset=parser.outrider_filtered
+            dataset=parser.outrider_ids
         ),
         expand(
             parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv",
             annotation=list(config["geneAnnotation"].keys()),
-            dataset=parser.outrider_filtered
+            dataset=parser.outrider_ids
         )
     output: touch(drop.getMethodPath(METHOD, link_type='final_file', tmp_dir=TMP_DIR))
 
 rule read_count_qc:
     input:
-        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_all"], file_type='RNA_BAM_FILE'),
+        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_ids"], file_type='RNA_BAM_FILE'),
         ucsc2ncbi = os.path.join(SCRIPT_ROOT, "resource", "chr_UCSC_NCBI.txt"),
         script = os.path.join(SCRIPT_ROOT, "Scripts", "Counting", "bamfile_coverage.sh")
     output:
         qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"
     params:
-        sample_ids = lambda wildcards: parser.outrider_all[wildcards.dataset]
+        sample_ids = lambda wildcards: parser.outrider_ids[wildcards.dataset]
     shell:
         "{input.script} {input.ucsc2ncbi} {output.qc} {params.sample_ids} {input.bam_files}"
 
 
 ### RULEGRAPH
-import oyaml
+#import yaml
 
 config_file = drop.getMethodPath(METHOD, link_type='config_file', tmp_dir=TMP_DIR)
 rulegraph_filename = f'{config["htmlOutputPath"]}/{METHOD}_rulegraph'
 
-with open(config_file, 'w') as yaml_file:
-    oyaml.dump(config, yaml_file, default_flow_style=False)
+#with open(config_file, 'w') as yaml_file:
+#    yaml.dump(config, yaml_file, default_flow_style=False)
 
 rule produce_rulegraph:
     input:
