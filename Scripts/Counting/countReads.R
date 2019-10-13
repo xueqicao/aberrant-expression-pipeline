@@ -25,12 +25,12 @@ suppressPackageStartupMessages({
 # Get strand specific information from sample annotation
 sampleID <- snakemake@wildcards$sampleID
 sample_anno <- fread(snakemake@config$sampleAnnotation)
-sample_anno <- sample_anno[RNA_ASSAY == sampleID]
+sample_anno <- sample_anno[RNA_ID == sampleID]
 
-strand <- sample_anno$STRAND
+strand <- tolower(sample_anno$STRAND)
 count_mode <- sample_anno$COUNT_MODE
-paired_end <- sample_anno$PAIRED_END
-overlap <- sample_anno$COUNT_OVERLAPS
+paired_end <- as.logical(sample_anno$PAIRED_END)
+overlap <- as.logical(sample_anno$COUNT_OVERLAPS)
 inter_feature <- ! overlap # inter_feature = FALSE does not allow overlaps
 
 # infer preprocessing and strand info
