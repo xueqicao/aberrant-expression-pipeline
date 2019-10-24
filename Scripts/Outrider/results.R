@@ -7,7 +7,6 @@
 #'  output:
 #'   - results: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'   - results_all: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results_all.Rds"`'
-#'   - results_public: '`sm config["webDir"] + "/aberrant_expression/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'  type: script
 #'---
 
@@ -36,4 +35,9 @@ res <- res[padjust <= snakemake@config$aberrantExpression$padjCutoff &
 
 # Save results 
 fwrite(res, snakemake@output$results, sep = "\t", quote = F)
-fwrite(res, snakemake@output$results_public, sep = "\t", quote = F)
+
+web_dir <- snakemake@config$webDir
+if (!is.null(web_dir)) {
+    pub_res <- paste0(web_dir, "/aberrant_expression/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv")
+    fwrite(res, pub_res, sep = "\t", quote = F)
+}

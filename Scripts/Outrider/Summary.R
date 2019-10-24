@@ -5,7 +5,6 @@
 #'  input:
 #'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
 #'   - results: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
-#'   - results_public: '`sm config["webDir"] + "/aberrant_expression/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'  output:
 #'   - wBhtml: '`sm config["htmlOutputPath"] + "/AberrantExpression/Outrider/{annotation}/Summary_{dataset}.html"`'
 #'  type: noindex
@@ -121,5 +120,12 @@ res[, padjust := format(padjust, scientific = T, digits = 2)]
 DT::datatable(res, caption = "OUTRIDER results", style = 'bootstrap', filter = 'top')
 
 #' ### Download Aberrant Samples Table
-results_link <- snakemake@input$results_public
+web_dir <- snakemake@config$webDir
+
+if (!is.null(results_link)) {
+    results_link <- paste0(web_dir, "/aberrant_expression/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv")
+else {
+    results_link <- snakemake@input$results
+}
 #' [Download OUTRIDER results table](`r results_link`)
+
