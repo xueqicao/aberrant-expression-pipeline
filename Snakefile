@@ -4,7 +4,7 @@ import drop
 import pathlib
 
 parser = drop.config(config)
-config = parser.config # needed if you dont provide the wbuild.yaml as configfile
+config = parser.parse()
 include: config['wBuildPath'] + "/wBuild.snakefile"
 
 METHOD = 'AE'
