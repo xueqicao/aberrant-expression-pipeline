@@ -8,8 +8,7 @@ config = parser.parse()
 include: config['wBuildPath'] + "/wBuild.snakefile"
 
 METHOD = 'AE'
-SCRIPT_ROOT = drop.getMethodPath(METHOD, link_type='workdir')
-TMP_DIR = config['tmpdir']
+SCRIPT_ROOT = drop.getMethodPath(METHOD, type_='workdir')
 
 rule all:
     input: 
@@ -24,7 +23,7 @@ rule all:
             annotation=list(config["geneAnnotation"].keys()),
             dataset=parser.outrider_ids
         )
-    output: touch(drop.getMethodPath(METHOD, link_type='final_file', tmp_dir=TMP_DIR))
+    output: touch(drop.getMethodPath(METHOD, type_='final_file'))
 
 rule read_count_qc:
     input:
@@ -40,7 +39,7 @@ rule read_count_qc:
 
 
 ### RULEGRAPH
-config_file = drop.getMethodPath(METHOD, link_type='config_file', tmp_dir=TMP_DIR)
+config_file = drop.getConfFile()
 rulegraph_filename = f'{config["htmlOutputPath"]}/{METHOD}_rulegraph'
 
 rule produce_rulegraph:
@@ -60,3 +59,4 @@ rule render_dot:
         "{prefix}.{fmt,(png|svg)}"
     shell:
         "dot -T{wildcards.fmt} < {input} > {output}"
+
