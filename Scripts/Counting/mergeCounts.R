@@ -10,6 +10,7 @@
 #'        return expand(file_stump + "{sampleID}.Rds", sampleID=ids)
 #'  params:
 #'    - ids: '`sm parser.outrider_ids`'
+#'    - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input: 
 #'    - counts: '`sm lambda wildcards: getCountFiles(wildcards.annotation, wildcards.dataset)`'
 #'    - gene_name_mapping: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/gene_name_mapping.Rds"`'
@@ -19,8 +20,8 @@
 #'  type: script
 #'---
 
-saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/merge_counts.snakemake"))
-# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/merge_counts.snakemake") )
+saveRDS(snakemake, file.path(snakemake@params$tmpdir, "merge_counts.snakemake"))
+# snakemake <- readRDS(".drop/tmp/AE/merge_counts.snakemake")
 
 suppressPackageStartupMessages({
     library(BiocParallel)

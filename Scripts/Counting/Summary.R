@@ -2,6 +2,8 @@
 #' title: "Counts Summary: `r gsub('_', ' ', snakemake@wildcards$dataset)`"
 #' author: Daniela Andrade, Michaela Mueller
 #' wb:
+#'  params:
+#'    - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input: 
 #'    - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
 #'    - qc: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"`'
@@ -10,9 +12,8 @@
 #'  type: noindex
 #'---
 
-
-saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/counting_summary.snakemake") )
-#snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/counting_summary.snakemake") )
+saveRDS(snakemake, file.path(snakemake@config$tmpdir, "counting_summary.snakemake") )
+#snakemake <- readRDS(".drop/tmp/AE/counting_summary.snakemake")
 
 suppressPackageStartupMessages({
   library(OUTRIDER)

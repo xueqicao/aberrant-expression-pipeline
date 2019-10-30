@@ -2,6 +2,8 @@
 #' title: OUTRIDER Results
 #' author: mumichae
 #' wb:
+#'  params:
+#'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
 #'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
 #'  output:
@@ -10,9 +12,8 @@
 #'  type: script
 #'---
 
-print("Hello")
-saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_results.snakemake"))
-# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_results.snakemake"))
+saveRDS(snakemake, file.path(snakemake@params$tmpdir, "outrider_results.snakemake"))
+# snakemake <- readRDS(".drop/tmp/AE/outrider_results.snakemake")
 
 suppressPackageStartupMessages({
     library(dplyr)

@@ -2,6 +2,8 @@
 #' title: Count reads
 #' author: Michaela Mueller
 #' wb:
+#'  params:
+#'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
 #'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, file_type="RNA_BAM_FILE") `'
 #'   - count_ranges: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/count_ranges.Rds" `'
@@ -12,8 +14,8 @@
 #'---
 
 
-saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/counts.snakemake") )
-# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/counts.snakemake"))
+saveRDS(snakemake, file.path(snakemake@params$tmpdir, "counts.snakemake"))
+# snakemake <- readRDS(".drop/tmp/AE/counts.snakemake")
 
 suppressPackageStartupMessages({
   library(data.table)

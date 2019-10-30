@@ -2,6 +2,8 @@
 #' title: Preprocess Gene Annotations
 #' author: mumichae
 #' wb:
+#'  params:
+#'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
 #'   - gtf: '`sm lambda wildcards: parser.getGeneAnnotationFile(wildcards.annotation) `'
 #'  output:
@@ -11,8 +13,8 @@
 #'  type: script
 #'---
 
-saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/annotation.snakemake") )
-# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/annotation.snakemake") )
+saveRDS(snakemake, file.path(snakemake@params$tmpdir, "annotation.snakemake") )
+# snakemake <- readRDS(".drop/tmp/AE/annotation.snakemake")
 
 suppressPackageStartupMessages({
   library(GenomicFeatures)

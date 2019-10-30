@@ -2,6 +2,8 @@
 #' title: "OUTRIDER Summary: `r gsub('_', ' ', snakemake@wildcards$dataset)`"
 #' author: mumichae, vyepez
 #' wb:
+#'  params:
+#'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
 #'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
 #'   - results: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
@@ -11,8 +13,8 @@
 #'---
 
 #+ echo=F
-saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/outrider_summary.snakemake") )
-# snakemake <- readRDS(snakemake@config$tmpdir, "/AberrantExpression/outrider_summary.snakemake"))
+saveRDS(snakemake, file.path(snakemake@params$tmpdir, "outrider_summary.snakemake"))
+# snakemake <- readRDS(".drop/tmp/AE/outrider_summary.snakemake")
 
 suppressPackageStartupMessages({
     library(OUTRIDER)

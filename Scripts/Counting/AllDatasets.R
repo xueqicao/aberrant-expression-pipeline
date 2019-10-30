@@ -4,6 +4,7 @@
 #' wb:
 #'  params:
 #'   - ids: '`sm parser.outrider_ids`'
+#'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input: 
 #'   - summaries: '`sm expand(config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html",
 #'    annotation=list(config["geneAnnotation"].keys()), dataset=parser.outrider_ids)`'
@@ -13,8 +14,8 @@
 #'    code_download: TRUE
 #'---
 
-saveRDS(snakemake, paste0(snakemake@config$tmpdir, "/AberrantExpression/counting_overview.snakemake") )
-# snakemake <- readRDS(paste0(snakemake@config$tmpdir, "/AberrantExpression/counting_overview.snakemake")
+saveRDS(snakemake, file.path(snakemake@params$tmpdir, "counting_overview.snakemake") )
+# snakemake <- readRDS(".drop/tmp/AE/counting_overview.snakemake")
 
 groups <- names(snakemake@params$ids)
 gene_annotation_names <- names(snakemake@config$geneAnnotation)

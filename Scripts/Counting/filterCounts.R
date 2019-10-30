@@ -2,6 +2,8 @@
 #' title: Filter Counts for OUTRIDER
 #' author: Michaela Mueller
 #' wb:
+#'  params:
+#'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
 #'   - counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/total_counts.Rds"`'
 #'   - txdb: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/txdb.db"`'
@@ -11,8 +13,8 @@
 #'  type: script
 #'---
 
-saveRDS(snakemake,  paste0(snakemake@config$tmpdir, "/AberrantExpression/filter_counts.snakemake") )
-# snakemake <- readRDS( paste0(snakemake@config$tmpdir, "/AberrantExpression/filter_counts.snakemake") )
+saveRDS(snakemake,  file.path(snakemake@params$tmpdir, "filter_counts.snakemake") )
+# snakemake <- readRDS(".drop/tmp/AE/filter_counts.snakemake")
 
 suppressPackageStartupMessages({
     library(OUTRIDER)
