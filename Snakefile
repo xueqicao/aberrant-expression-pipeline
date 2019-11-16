@@ -5,6 +5,7 @@ import pathlib
 
 METHOD = 'AE'
 SCRIPT_ROOT = os.getcwd() #drop.getMethodPath(METHOD, type_='workdir')
+CONF_FILE = drop.getConfFile()
 
 parser = drop.config(config, METHOD)
 config = parser.parse()
@@ -37,9 +38,6 @@ rule read_count_qc:
     shell:
         "{input.script} {input.ucsc2ncbi} {output.qc} {params.sample_ids} {input.bam_files}"
 
-
-### RULEGRAPH
-config_file = drop.getConfFile()
 rulegraph_filename = f'{config["htmlOutputPath"]}/{METHOD}_rulegraph'
 
 rule produce_rulegraph:
@@ -52,7 +50,10 @@ rule create_graph:
         png = f"{rulegraph_filename}.png"
     shell:
         """
-        snakemake --configfile {config_file} --rulegraph | dot -Tsvg > {output.svg}
-        snakemake --configfile {config_file} --rulegraph | dot -Tpng > {output.png}
+        snakemake --configfile {CONF_FILE} --rulegraph | dot -Tsvg > {output.svg}
+        snakemake --configfile {CONF_FILE} --rulegraph | dot -Tpng > {output.png}
         """
+rule unlock:
+    output: touch(drop.getMethodPath(METHOD, type_="unlock"))
+    shell: "snakemake --unlock --configfile {CONF_FILE}"
 
