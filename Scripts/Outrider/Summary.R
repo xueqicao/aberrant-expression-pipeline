@@ -23,7 +23,6 @@ suppressPackageStartupMessages({
     library(cowplot)
     library(data.table)
     library(dplyr)
-    library(ggbeeswarm)
     library(ggthemes)
 })
 
@@ -123,10 +122,11 @@ DT::datatable(res, caption = "OUTRIDER results", style = 'bootstrap', filter = '
 
 #' ### Download Aberrant Samples Table
 web_dir <- snakemake@config$webDir
-
-if (!is.null(results_link)) {
-    results_link <- paste0(web_dir, "/aberrant_expression/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv")
-else {
+if (!is.null(web_dir)) {
+    results_link <- paste0(web_dir, 
+        "/aberrant_expression/results/", snakemake@wildcards$annotation,
+        "/outrider/", snakemake@wildcards$dataset ,"/OUTRIDER_results.tsv")
+} else {
     results_link <- snakemake@input$results
 }
 #' [Download OUTRIDER results table](`r results_link`)
