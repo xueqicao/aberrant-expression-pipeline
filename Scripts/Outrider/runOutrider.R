@@ -31,21 +31,17 @@ ods <- ods[mcols(ods)$passedFilter,]
     
 ods <- estimateSizeFactors(ods)
 
-a = 5 
-b = min(ncol(ods), nrow(ods)) / 3   # N/3
-Nsteps = min(20, ncol(ods)/3, nrow(ods)/3)   # Do either 20 steps or N
-pars_q <- round(exp(seq(log(a),log(b),length.out = Nsteps))) %>% unique # Do unique in case 2 were repeated
+a <- 5 
+b <- min(ncol(ods), nrow(ods)) / 3   # N/3
+Nsteps <- min(20, ncol(ods)/3, nrow(ods)/3)   # Do at most 20 steps or N/3
+# Do unique in case 2 were repeated
+pars_q <- round(exp(seq(log(a),log(b),length.out = Nsteps))) %>% unique
 
 # skip finding optimal encoding dimension for now
 ods <- findEncodingDim(ods, lnorm = T, BPPARAM = MulticoreParam(snakemake@threads), params = pars_q)
 
 ods <- OUTRIDER(ods, BPPARAM = MulticoreParam(snakemake@threads))
 message("outrider fitting finished")
-
-# ods <- autoCorrect(ods, q = 60)  # Felix recommended, q = Ngenes / 4
-# ods <- fit(ods)
-# ods <- computePvalues(ods)
-# ods <- computeZscores(ods)
 
 
 # do it if you have time and a big memory 

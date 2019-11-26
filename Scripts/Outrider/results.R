@@ -25,7 +25,9 @@ suppressPackageStartupMessages({
 
 ods <- readRDS(snakemake@input$ods)
 res <- results(ods, all = TRUE)
-res[, FC := round(2^l2fc, 2)]
+
+# Add fold change
+res[, foldChange := round(2^l2fc, 2)]
 
 # Save all the results and significant ones
 saveRDS(res, snakemake@output$results_all)
@@ -39,6 +41,8 @@ fwrite(res, snakemake@output$results, sep = "\t", quote = F)
 
 web_dir <- snakemake@config$webDir
 if (!is.null(web_dir)) {
-    pub_res <- paste0(web_dir, "/aberrant_expression/results/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv")
+    pub_res <- paste0(web_dir, 
+                      "/aberrant_expression/results/{annotation}/outrider/",
+                      "{dataset}/OUTRIDER_results.tsv")
     fwrite(res, pub_res, sep = "\t", quote = F)
 }

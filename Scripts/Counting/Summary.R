@@ -6,7 +6,7 @@
 #'    - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input: 
 #'    - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
-#'    - qc: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"`'
+#'    - bam_cov: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"`'
 #'  output:
 #'   - wBhtml: '`sm config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html"`'
 #'  type: noindex
@@ -23,7 +23,6 @@ suppressPackageStartupMessages({
   library(ggthemes)
   library(cowplot)
   library(data.table)
-  library(dplyr)
   library(tidyr)
 })
 
@@ -36,18 +35,19 @@ cnts_mtx <- counts(ods, normalized = F)
 #' 
 #' Compare number of records vs. read counts
 #' 
-bam_coverage <- fread(snakemake@input$qc)
-coverage_dt <- left_join(bam_coverage,
+bam_coverage <- fread(snakemake@input$bam_cov)
+coverage_dt <- merge(bam_coverage,
                    data.table(sampleID = colnames(ods),
                               read_count = colSums(cnts_mtx)),
-                   by = "sampleID") %>% as.data.table
+                   by = "sampleID", sort = FALSE)
 # read count
-setorder(coverage_dt, "read_count")
+setorder(coverage_dt, read_count)
 coverage_dt[, count_rank := .I]
 # ratio
 coverage_dt[, counted_frac := read_count/record_count]
-setorder(coverage_dt, "counted_frac")
+setorder(coverage_dt, counted_frac)
 coverage_dt[, frac_rank := .I]
+
 # size factors 
 ods <- estimateSizeFactors(ods)
 coverage_dt[, size_factors := sizeFactors(ods)]
@@ -58,17 +58,14 @@ p_depth <- ggplot(coverage_dt, aes(count_rank, read_count)) +
     geom_point() +
     theme_cowplot() +
     background_grid() +
-    labs(title = "Obtained Read Counts",
-         x = "Sample Rank", 
-         y = "Reads Counted") +
+    labs(title = "Obtained Read Counts", x="Sample Rank", y = "Reads Counted") +
     ylim(c(0,NA))
 
 p_frac <- ggplot(coverage_dt, aes(frac_rank, counted_frac)) +
     geom_point() +
     theme_cowplot() +
     background_grid() +
-    labs(title = "Obtained Read Count Ratio",
-       x = "Sample Rank", 
+    labs(title = "Obtained Read Count Ratio", x = "Sample Rank", 
        y = "Percent Reads Counted") +
    ylim(c(0,NA))
 
@@ -132,7 +129,7 @@ p_dens <- ggplot(filter_dt, aes(x = median_counts, col = filter)) +
 #+ meanCounts, fig.height=6, fig.width=12
 plot_grid(p_hist, p_dens)
 
-#+ expressedGenes, fig.height=7, fig.width=9
+#+ expressedGenes, fig.height=6, fig.width=8
 plotExpressedGenes(ods) +
   theme_cowplot() +
   background_grid(major = "y")
