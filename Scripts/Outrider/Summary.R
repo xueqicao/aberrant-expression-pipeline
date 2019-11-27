@@ -57,7 +57,7 @@ plotCountCorHeatmap(ods, normalized = TRUE,
 
 
 #' ### Expression by gene per sample
-#+ geneSampleHeatmap, fig.height=15, fig.width=6
+#+ geneSampleHeatmap, fig.height=12, fig.width=6
 plotCountGeneSampleHeatmap(ods, normalized = FALSE, nGenes = 50,
                            main = paste0('Raw Counts (', dataset_title, ')'),
                            bcvQuantile = .95, show_names = 'row')
@@ -72,7 +72,8 @@ estimateThetaWithoutAutoCorrect <- function(ods){
   
   ods1 <- OutriderDataSet(countData=counts(ods), colData=colData(ods))
   # use rowMeans as expected means
-  normalizationFactors(ods1) <- matrix(rowMeans(counts(ods1)), ncol=ncol(ods1), nrow=nrow(ods1))
+  normalizationFactors(ods1) <- matrix(rowMeans(counts(ods1)), 
+                                       ncol=ncol(ods1), nrow=nrow(ods1))
   ods1 <- fit(ods1)
   theta(ods1)
   
@@ -88,7 +89,7 @@ bcv_dt <- rbind(before, after)
 #+ BCV, fig.height=5, fig.width=6
 ggplot(bcv_dt, aes(when, BCV)) +
     geom_boxplot() +
-    theme_clean(base_size = 16) +
+    theme_bw(base_size = 14) +
     labs(x = "",
          title = paste0("BCV - Before and After Autoencoder (", 
                         dataset_title, ")"))

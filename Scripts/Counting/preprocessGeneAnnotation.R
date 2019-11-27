@@ -21,7 +21,6 @@ suppressPackageStartupMessages({
   library(rtracklayer)
   library(data.table)
   library(magrittr)
-  library(tidyr)
 })
 
 
@@ -41,9 +40,10 @@ saveRDS(count_ranges, snakemake@output$count_ranges)
 ## Create Gene Name mapping
 gtf_dt <- import(snakemake@input$gtf) %>% as.data.table
 if (!"gene_name" %in% colnames(gtf_dt)) {
-  gtf_dt[gene_name := gene_id]
+  gtf_dt[, gene_name := gene_id]
 }
-gtf_dt <- gtf_dt[type == "gene", .(seqnames, start, end, strand, gene_id, gene_name, gene_type, gene_status)]
+gtf_dt <- gtf_dt[type == "gene", .(seqnames, start, end, strand, gene_id, 
+                                   gene_name, gene_type, gene_status)]
 
 # make gene_names unique
 gtf_dt[, N := 1:.N, by = gene_name] # warning message

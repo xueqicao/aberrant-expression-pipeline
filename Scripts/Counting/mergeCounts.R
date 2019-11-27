@@ -52,17 +52,20 @@ rowRanges(total_counts) <- rowRanges(counts_list[[1]])
 # Add gene annotation data (rowData)
 gene_annot_dt <- fread(snakemake@input$gene_name_mapping)
 row_data <- data.table(gene_id = names(total_counts))
-row_data <- left_join(row_data, gene_annot_dt[,.(gene_id, gene_name, gene_name_orig, gene_type)], by = "gene_id")
+row_data <- left_join(row_data, gene_annot_dt[,.(gene_id,
+                                                 gene_name,
+                                                 gene_name_orig,
+                                                 gene_type)]
+                      , by = "gene_id")
 rownames(row_data) <- rownames(total_counts) <- row_data$gene_id
 rowData(total_counts) <- row_data
- 
+
 
 # Add sample annotation data (colData)
 sample_anno <- fread(snakemake@config$sampleAnnotation)
-col_data <- data.table(colnames(total_counts))
-names(col_data) <- "RNA_ID"
+col_data <- data.table(RNA_ID = colnames(total_counts))
 col_data <- left_join(col_data, sample_anno, by = "RNA_ID")
-rownames(col_data) <- col_data[,1]
+rownames(col_data) <- col_data$RNA_ID
 colData(total_counts) <- as(col_data, "DataFrame")
 
 saveRDS(total_counts, snakemake@output$counts)
