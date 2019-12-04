@@ -5,11 +5,18 @@
 #'  params:
 #'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
-#'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
-#'   - results: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
+#'   - ods: '`sm parser.getProcResultsDir() +
+#'           "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'   - results: '`sm parser.getProcResultsDir() +
+#'               "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
 #'  output:
-#'   - wBhtml: '`sm config["htmlOutputPath"] + "/AberrantExpression/Outrider/{annotation}/Summary_{dataset}.html"`'
+#'   - wBhtml: '`sm config["htmlOutputPath"] + 
+#'              "/AberrantExpression/Outrider/{annotation}/Summary_{dataset}.html"`'
 #'  type: noindex
+#' output:
+#'  html_document:
+#'   code_folding: hide
+#'   code_download: TRUE
 #'---
 
 #+ echo=F

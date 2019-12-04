@@ -5,9 +5,11 @@
 #'  params:
 #'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
-#'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'   - ods: '`sm parser.getProcResultsDir() + 
+#'           "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
 #'  output:
-#'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'   - ods: '`sm parser.getProcResultsDir() + 
+#'           "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
 #'  type: script
 #'  threads: 30
 #'---
@@ -25,33 +27,27 @@ saveRDS(snakemake, file.path(snakemake@params$tmpdir, "outrider.snakemake"))
 # snakemake <- readRDS(".drop/tmp/AE/outrider.snakemake")
 
 ods <- readRDS(snakemake@input$ods)
+implementation <- snakemake@config$aberrantExpression$implementation
+register(MulticoreParam(snakemake@threads))
 
-# OUTRIDER pipeline
+## subset filtered and estimate
 ods <- ods[mcols(ods)$passedFilter,] 
-    
 ods <- estimateSizeFactors(ods)
 
+## find optimal encoding dimension
 a <- 5 
 b <- min(ncol(ods), nrow(ods)) / 3   # N/3
 Nsteps <- min(20, ncol(ods)/3, nrow(ods)/3)   # Do at most 20 steps or N/3
 # Do unique in case 2 were repeated
 pars_q <- round(exp(seq(log(a),log(b),length.out = Nsteps))) %>% unique
+ods <- findEncodingDim(ods, params = pars_q, lnorm = TRUE, implementation = implementation)
 
-# skip finding optimal encoding dimension for now
-ods <- findEncodingDim(ods, lnorm = T, BPPARAM = MulticoreParam(snakemake@threads), params = pars_q)
-
-ods <- OUTRIDER(ods, BPPARAM = MulticoreParam(snakemake@threads))
+## fit OUTRIDER
+ods <- OUTRIDER(ods, implementation = implementation)
 message("outrider fitting finished")
 
-
-# do it if you have time and a big memory 
-# plotQQ(ods, global=TRUE)
-
-row.names(ods) <- rowData(ods)$gene_name
-
-op <- snakemake@output$ods
-
 # Save the new ods with a date stamp
+op <- snakemake@output$ods
 op_date <- paste0(strsplit(op, "\\.")[[1]][1], "-", format(Sys.time(), "%Y%m%d") , ".Rds")
 saveRDS(ods, op_date)
 

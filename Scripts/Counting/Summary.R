@@ -5,11 +5,18 @@
 #'  params:
 #'    - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input: 
-#'    - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
-#'    - bam_cov: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"`'
+#'    - ods: '`sm parser.getProcResultsDir() +
+#'            "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'    - bam_cov: '`sm parser.getProcDataDir() +
+#'                "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"`'
 #'  output:
-#'   - wBhtml: '`sm config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html"`'
+#'   - wBhtml: '`sm config["htmlOutputPath"] +
+#'              "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html"`'
 #'  type: noindex
+#' output:
+#'  html_document:
+#'   code_folding: hide
+#'   code_download: TRUE
 #'---
 
 saveRDS(snakemake, file.path(snakemake@config$tmpdir, "counting_summary.snakemake") )

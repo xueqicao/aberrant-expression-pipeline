@@ -15,9 +15,8 @@ rule all:
     input: 
         rules.Index.output, config["htmlOutputPath"] + "/aberrant_expression_readme.html",
         expand(
-            config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html",
-            annotation=list(config["geneAnnotation"].keys()),
-            dataset=parser.outrider_ids
+            config["htmlOutputPath"] + "/Scripts_Counting_AllDatasets.html",
+            annotation=list(config["geneAnnotation"].keys())
         ),
         expand(
             parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv",
