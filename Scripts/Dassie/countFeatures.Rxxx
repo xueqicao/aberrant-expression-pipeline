@@ -1,0 +1,45 @@
+#'---
+#' title: Count reads of samples on extracted features
+#' author: Michaela Müller
+#' wb:
+#'  input: 
+#'  - sample_bam: '`sm config["RAW_DATA"] + "/{sampleID}/RNAout/paired-endout/stdFilenames/{sampleID}.bam"`'
+#'  - features: '`sm config["DATA_DIR"] + "/{features}/feature_regions.RDS"`'
+#'  output:
+#'  - counts: '`sm config["DATA_DIR"] + "/{features}/{sampleID}_counts.RDS"`'
+#'  type: script
+#'---
+
+saveRDS(snakemake, "tmp/counts.snakemake")
+suppressPackageStartupMessages({
+  library(GenomicRanges)
+})
+
+bam_file <- Rsamtools::BamFile(snakemake@input$sample_bam,yieldSize=2e6)
+feature_regions <- readRDS(snakemake@input$features)
+# invert strand because of batch3 BAM files
+if (class(feature_regions) == "GRanges") {
+  strand(feature_regions) <- ifelse(strand(feature_regions) == '+', '-', '+')
+} else {
+  unlisted <- unlist(feature_regions)
+  strand(unlisted) <- ifelse(strand(unlisted) == '+', '-', '+')
+  feature_regions <- relist(unlisted, feature_regions)
+}
+
+message(paste(c("feature:", "sample:"), snakemake@wildcards[1:2], collapse = "  "))
+starttime <- Sys.time()
+se <- GenomicAlignments::summarizeOverlaps(
+  feature_regions
+  , bam_file
+  , mode = "Union"
+  , singleEnd = F
+  , ignore.strand = F
+  , fragments = F
+  , count.mapped.reads = T
+  , inter.feature = F # keep reads mapping to overlapping regions
+)
+saveRDS(se, snakemake@output$counts)
+
+time <- format(Sys.time()- starttime)
+message(paste(c("feature:", "sample:", "time:"), c(snakemake@wildcards[1:2], time), collapse = "  "))
+

@@ -5,10 +5,13 @@
 #'  params:
 #'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
-#'   - ods: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'   - ods: '`sm parser.getProcResultsDir() + 
+#'           "/aberrant_expression/{annotation}/{feature_type}/{dataset}/ods.Rds"`'
 #'  output:
-#'   - results: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
-#'   - results_all: '`sm parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results_all.Rds"`'
+#'   - results: '`sm parser.getProcResultsDir() + 
+#'               "/aberrant_expression/{annotation}/{feature_type}/{dataset}/OUTRIDER_results.tsv"`'
+#'   - results_all: '`sm parser.getProcResultsDir() + 
+#'                   "/aberrant_expression/{annotation}/{feature_type}/{dataset}/OUTRIDER_results_all.Rds"`'
 #'  type: script
 #'---
 

@@ -6,8 +6,9 @@
 #'   - ids: '`sm parser.outrider_ids`'
 #'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input: 
-#'   - summaries: '`sm expand(config["htmlOutputPath"] + "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html",
-#'    annotation=list(config["geneAnnotation"].keys()), dataset=parser.outrider_ids)`'
+#'   - summaries: '`sm expand(config["htmlOutputPath"] + 
+#'                 "/AberrantExpression/Counting/{annotation}/Expression_Summary_{dataset}.html",
+#'                 annotation=list(config["geneAnnotation"].keys()), dataset=parser.outrider_ids)`'
 #' output:
 #'   html_document:
 #'    code_folding: hide

@@ -6,13 +6,12 @@
 #'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
 #'   - sample_bam: '`sm lambda wildcards: parser.getFilePath(wildcards.sampleID, file_type="RNA_BAM_FILE") `'
-#'   - count_ranges: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/count_ranges.Rds" `'
+#'   - count_ranges: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/{feature_type}/count_ranges.Rds" `'
 #'  output:
-#'   - counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/counts/{sampleID,[^/]+}.Rds"`'
+#'   - counts: '`sm parser.getProcDataDir() + "/aberrant_expression/{annotation}/{feature_type}/counts/{sampleID,[^/]+}.Rds"`'
 #'  type: script
 #'  threads: 1
 #'---
-
 
 saveRDS(snakemake, file.path(snakemake@params$tmpdir, "counts.snakemake"))
 # snakemake <- readRDS(".drop/tmp/AE/counts.snakemake")

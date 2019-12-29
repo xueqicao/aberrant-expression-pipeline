@@ -1,17 +1,17 @@
 #'---
-#' title: "OUTRIDER Summary: `r gsub('_', ' ', snakemake@wildcards$dataset)`"
-#' author: mumichae, vyepez
+#' title: "DASSIE Summary: `r gsub('_', ' ', snakemake@wildcards$dataset)`"
+#' author: mumichae
 #' wb:
 #'  params:
 #'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
 #'   - ods: '`sm parser.getProcResultsDir() +
-#'           "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'           "/aberrant_expression/{annotation}/dassie/{dataset}/ods.Rds"`'
 #'   - results: '`sm parser.getProcResultsDir() +
-#'               "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv"`'
+#'               "/aberrant_expression/{annotation}/dassie/{dataset}/OUTRIDER_results.tsv"`'
 #'  output:
 #'   - wBhtml: '`sm config["htmlOutputPath"] + 
-#'              "/AberrantExpression/Outrider/{annotation}/Summary_{dataset}.html"`'
+#'              "/AberrantExpression/Outrider/{annotation}/DASSIE_Summary_{dataset}.html"`'
 #'  type: noindex
 #' output:
 #'  html_document:
@@ -20,11 +20,11 @@
 #'---
 
 #+ echo=F
-saveRDS(snakemake, file.path(snakemake@params$tmpdir, "outrider_summary.snakemake"))
-# snakemake <- readRDS(".drop/tmp/AE/outrider_summary.snakemake")
+saveRDS(snakemake, file.path(snakemake@params$tmpdir, "dassie_summary.snakemake"))
+# snakemake <- readRDS(".drop/tmp/AE/dassie_summary.snakemake")
 
 suppressPackageStartupMessages({
-    library(OUTRIDER)
+    library(DASSIE)
     library(SummarizedExperiment)
     library(ggplot2)
     library(cowplot)

@@ -5,13 +5,13 @@
 #'  params:
 #'    - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input: 
-#'    - ods: '`sm parser.getProcResultsDir() +
-#'            "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'    - ods: '`sm parser.getProcDataDir() +
+#'            "/aberrant_expression/{annotation}/expression/{dataset}/ods_unfitted.Rds"`'
 #'    - bam_cov: '`sm parser.getProcDataDir() +
-#'                "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"`'
+#'                "/aberrant_expression/{annotation}/expression/{dataset}/bam_coverage.tsv"`'
 #'  output:
 #'   - wBhtml: '`sm config["htmlOutputPath"] +
-#'              "/AberrantExpression/Counting/{annotation}/Summary_{dataset}.html"`'
+#'              "/AberrantExpression/Counting/{annotation}/Expression_Summary_{dataset}.html"`'
 #'  type: noindex
 #' output:
 #'  html_document:

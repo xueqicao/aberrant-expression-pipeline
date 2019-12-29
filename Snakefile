@@ -11,31 +11,35 @@ parser = drop.config(config, METHOD)
 config = parser.parse()
 include: config['wBuildPath'] + "/wBuild.snakefile"
 
+print(rules.Scripts_Outrider_Overview_R.output)
 rule all:
     input: 
         rules.Index.output, config["htmlOutputPath"] + "/aberrant_expression_readme.html",
-        expand(
-            config["htmlOutputPath"] + "/Scripts_Counting_AllDatasets.html",
-            annotation=list(config["geneAnnotation"].keys())
-        ),
-        expand(
-            parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv",
-            annotation=list(config["geneAnnotation"].keys()),
-            dataset=parser.outrider_ids
-        )
+        rules.Scripts_Outrider_Overview_R.output
+        #expand(
+        #    config["htmlOutputPath"] + "/Scripts_Counting_Overview.html",
+        #    annotation=list(config["geneAnnotation"].keys())
+        #),
+        #expand(
+        #    parser.getProcResultsDir() + "/aberrant_expression/{annotation}/expression/{dataset}/OUTRIDER_results.tsv",
+        #    annotation=list(config["geneAnnotation"].keys()),
+        #    dataset=parser.outrider_ids
+        #)
     output: touch(drop.getMethodPath(METHOD, type_='final_file'))
 
-rule read_count_qc:
+rule bam_cov_stats:
     input:
-        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_ids"], file_type='RNA_BAM_FILE'),
+        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, 
+                                                          ids_by_group=parser.outrider_ids, 
+                                                          file_type='RNA_BAM_FILE'),
         ucsc2ncbi = os.path.join(SCRIPT_ROOT, "resource", "chr_UCSC_NCBI.txt"),
-        script = os.path.join(SCRIPT_ROOT, "Scripts", "Counting", "bamfile_coverage.sh")
+        script = os.path.join(SCRIPT_ROOT, "Scripts", "Preprocessing", "bamfile_stats.sh")
     output:
-        qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"
+        parser.getProcDataDir() + "/aberrant_expression/{annotation}/expression/{dataset}/bam_coverage.tsv"
     params:
         sample_ids = lambda wildcards: parser.outrider_ids[wildcards.dataset]
     shell:
-        "{input.script} {input.ucsc2ncbi} {output.qc} {params.sample_ids} {input.bam_files}"
+        "{input.script} {input.ucsc2ncbi} {output} {params.sample_ids} {input.bam_files}"
 
 rulegraph_filename = f'{config["htmlOutputPath"]}/{METHOD}_rulegraph'
 

@@ -6,12 +6,12 @@
 #'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
 #'   - counts: '`sm parser.getProcDataDir() +
-#'              "/aberrant_expression/{annotation}/outrider/{dataset}/total_counts.Rds"`'
+#'              "/aberrant_expression/{annotation}/expression/{dataset}/total_counts.Rds"`'
 #'   - txdb: '`sm parser.getProcDataDir() +
 #'            "/aberrant_expression/{annotation}/txdb.db"`'
 #'  output:
-#'   - ods: '`sm parser.getProcResultsDir() +
-#'           "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'   - ods: '`sm parser.getProcDataDir() +
+#'           "/aberrant_expression/{annotation}/expression/{dataset}/ods_unfitted.Rds"`'
 #'  type: script
 #'---
 

@@ -5,14 +5,17 @@
 #'  params:
 #'   - tmpdir: '`sm drop.getMethodPath(METHOD, "tmp_dir")`'
 #'  input:
-#'   - ods: '`sm parser.getProcResultsDir() + 
-#'           "/aberrant_expression/{annotation}/outrider/{dataset}/ods_unfitted.Rds"`'
+#'   - ods: '`sm parser.getProcDataDir() +
+#'           "/aberrant_expression/{annotation}/{feature_type}/{dataset}/ods_unfitted.Rds"`'
 #'  output:
 #'   - ods: '`sm parser.getProcResultsDir() + 
-#'           "/aberrant_expression/{annotation}/outrider/{dataset}/ods.Rds"`'
+#'           "/aberrant_expression/{annotation}/{feature_type}/{dataset}/ods.Rds"`'
 #'  type: script
 #'  threads: 30
 #'---
+
+saveRDS(snakemake, file.path(snakemake@params$tmpdir, "outrider.snakemake"))
+# snakemake <- readRDS(".drop/tmp/AE/outrider.snakemake")
 
 suppressPackageStartupMessages({
     library(OUTRIDER)
@@ -22,9 +25,6 @@ suppressPackageStartupMessages({
     library(dplyr)
     library(magrittr)
 })
-
-saveRDS(snakemake, file.path(snakemake@params$tmpdir, "outrider.snakemake"))
-# snakemake <- readRDS(".drop/tmp/AE/outrider.snakemake")
 
 ods <- readRDS(snakemake@input$ods)
 implementation <- snakemake@config$aberrantExpression$implementation

@@ -1,0 +1,116 @@
+#'---
+#' title: Significant Results with Sample Annotation
+#' author: Michaela Müller
+#' wb:
+#'  input:
+#'  - feature_annotation: '`sm config["DATA_DIR"] + "/feature_annotation.RDS"`'
+#'  - ods: '`sm config["DATA_DIR"] + "/original/ods_fitted.RDS"`'
+#'  - ods_gene: '`sm config["DATA_DIR"] + "/geneLevel/ods_fitted.RDS"`'
+#'  output:
+#'  - results: '`sm config["processedDataPath"] + "/original/results.tsv"`'
+#'  type: script
+#'---
+
+saveRDS(snakemake, "tmp/all_results.snakemake")
+suppressMessages({
+  library(tidyr)
+  library(dplyr)
+  devtools::load_all("../OUTRIDER")
+  devtools::load_all("DASSIE")
+})
+
+fdr_limit <- snakemake@config$FDR_LIMIT
+ods_gene <- readRDS(snakemake@input$ods_gene)
+ods <- readRDS(snakemake@input$ods)
+
+message("save bed file")
+gr_to_bed(rowRanges(ods), filename = snakemake@output$bed, invertStrand = T)
+
+message("compute results")
+results <- results(ods, padjCutoff = fdr_limit, zScoreCutoff = snakemake@config$ZSCORE_LIMIT)
+results[, effectSize := abs(zScore)]
+results[, feature_id := as.integer(geneID)]
+results[, geneID := NULL]
+
+message("add feature information")
+feature_dt <- featureInfo(ods, summary = F)
+feature_annotation <- readRDS(snakemake@input$feature_annotation)
+results <- merge(results, feature_dt[, .(feature_id, type, transcript_id, exon_id)], by = "feature_id")
+results <- merge(results, feature_annotation[, .(feature_id, gene_name, gene_id, transcript_type, gene_type)], by = "feature_id")
+
+message("add gene level candidate tags")
+gene_results <- get_all_results(ods_gene, assays = c("padjust", "zScore"), id.as.int = F)
+results <- merge(results, gene_results[, .(sampleID, gene_id = feature_id, zScore_genewise = zScore, outrider = padjust <= fdr_limit)],
+                 by = c("gene_id", "sampleID"))
+results[, zscore_dist := abs(zScore - zScore_genewise)]
+
+message("add gene information")
+# mito-association
+source("../genetic_diagnosis/src/r/functions/gene_annotation/add_gene_info_cols.R")
+results <- add_mitocarta_col(results, gene_name_col = "gene_name")
+results <- add_hans_class(results, gene_name_col = "gene_name")
+results[, ASSOCIATED_DISEASE_PHENOTYPES := NULL]
+
+message("add sample annotation")
+sample_anno <- fread(snakemake@config$SAMPLE_ANNOTATION)
+sample_anno_sub <- sample_anno[RNA_ID %in% colnames(ods), 
+         .(BATCH, EXOME_ID, FIBROBLAST_ID, RNA_ID, DISEASE, CANDIDATE_GENE, COMMENT, CLINICAL_SYMPTOMS)]
+
+results <- merge(results, sample_anno_sub, by.x = "sampleID", by.y = "RNA_ID", all.x = T)
+results[, HANS_CLASS := replace_na(HANS_CLASS, "")]
+
+phenotypes <- fread(snakemake@config$PHENOTYPES)
+setnames(phenotypes, "gene_name", "KNOWN_MUTATION")
+results <- merge(results, phenotypes, by.x = "EXOME_ID", by.y = "exome_ID", all.x = T)
+
+###
+
+message("save results")
+write.table(results, snakemake@output$results, sep = "\t", quote = F,  row.names = F)
+writeResults(results, snakemake@output$results_genes, type = "gene_wise")
+writeResults(results, snakemake@output$results_features, type = "feature_wise")
+
+# save results stats
+## type-wise summary
+types <- c("TSS_upstream", "TSS_downstream", "PAS_upstream", "PAS_downstream")
+values <- sapply(types, function(t){
+  dt <- results[type == t]
+  c(nrow(dt),
+    sum(dt$outrider), 
+    sum(is.na(dt$KNOWN_MUTATION)), 
+    sum(dt$MITOCARTA), 
+    sum(dt$HANS_CLASS == "MITO"))#, 
+    #sum(dt$MITOCARTA | dt$HANS_CLASS == "MITO"))
+})
+colnames(values) <- gsub(pattern = "_", replacement = "", colnames(values))
+rownames(values) <- c("All detected",
+                      "Undetected", 
+                      "Unsolved",
+                      "Mito localized (mitocarta)",
+                      "Mito disease")
+stats <- as.data.table(values, keep.rownames = "Subset")
+stats[, Total := rowSums(values)]
+
+fwrite(stats, snakemake@output$results_stats, sep = "\t")
+
+## global summary
+genes <- unique(results[, .(gene_name, gene_id, gene_type, sampleID, CANDIDATE_GENE, KNOWN_MUTATION, outrider, DISEASE, MITOCARTA, HANS_CLASS)])
+parameters <- c(
+  "All detected genes",
+  "DASSIE-unique genes",
+  "All detected samples",
+  "Undiagnosed samples",
+  "Samples without candidate gene"
+)
+values <- c(
+  # nrow(genes), # number of detected gene-sample combinations
+  uniqueN(genes$gene_id), # unique genes
+  # uniqueN(genes[outrider == F]), # gene-samples not detected by gene-wise OUTRIDER
+  uniqueN(genes[outrider == F, gene_name]), # genes not detected by gene-wise OUTRIDER
+  uniqueN(genes$sampleID), # unique samples
+  uniqueN(genes[is.na(KNOWN_MUTATION), sampleID]), # samples w/o known mutation
+  uniqueN(genes[is.na(CANDIDATE_GENE), sampleID]) # samples w/o candidate gene
+)
+stats <- data.table(parameters, values)
+fwrite(stats, snakemake@output$results_stats_global, sep = "\t")
+
