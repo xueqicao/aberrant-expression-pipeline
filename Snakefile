@@ -2,29 +2,20 @@
 import os
 import drop
 import pathlib
+import Snakefile_functions as hp
 
 METHOD = 'AE'
-SCRIPT_ROOT = os.getcwd() #drop.getMethodPath(METHOD, type_='workdir')
+SCRIPT_ROOT = drop.getMethodPath(METHOD, type_='workdir')
 CONF_FILE = drop.getConfFile()
 
 parser = drop.config(config, METHOD)
 config = parser.parse()
 include: config['wBuildPath'] + "/wBuild.snakefile"
 
-print(rules.Scripts_Outrider_Overview_R.output)
 rule all:
     input: 
-        rules.Index.output, config["htmlOutputPath"] + "/aberrant_expression_readme.html",
-        rules.Scripts_Outrider_Overview_R.output
-        #expand(
-        #    config["htmlOutputPath"] + "/Scripts_Counting_Overview.html",
-        #    annotation=list(config["geneAnnotation"].keys())
-        #),
-        #expand(
-        #    parser.getProcResultsDir() + "/aberrant_expression/{annotation}/expression/{dataset}/OUTRIDER_results.tsv",
-        #    annotation=list(config["geneAnnotation"].keys()),
-        #    dataset=parser.outrider_ids
-        #)
+        rules.Index.output, 
+        config["htmlOutputPath"] + "/aberrant_expression_readme.html"
     output: touch(drop.getMethodPath(METHOD, type_='final_file'))
 
 rule bam_cov_stats:
