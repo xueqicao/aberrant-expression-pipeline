@@ -1,0 +1,3 @@
+[submodule "DASSIE"]
+	path = DASSIE
+	url = git@github.com:mumichae/DASSIE.git
