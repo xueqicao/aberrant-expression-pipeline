@@ -23,8 +23,9 @@
 saveRDS(snakemake, file.path(snakemake@params$tmpdir, "dassie_summary.snakemake"))
 # snakemake <- readRDS(".drop/tmp/AE/dassie_summary.snakemake")
 
+source("Scripts/_helpers/load_packages.R")
 suppressPackageStartupMessages({
-    library(DASSIE)
+    library(OUTRIDER)
     library(SummarizedExperiment)
     library(ggplot2)
     library(cowplot)
@@ -53,7 +54,6 @@ plotEncDimSearch(ods) +
 
 #' ### Aberrant samples
 plotAberrantPerSample(ods, main = dataset_title)
-
 
 #' ### Batch correction
 #+ countCorHeatmap, fig.height=8, fig.width=8

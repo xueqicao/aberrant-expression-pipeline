@@ -33,9 +33,9 @@ markdown_links <- function(html_files, summaries_titles) {
 
 #' ## OUTRIDER Summaries 
 #' 
-#' `r markdown_links(snakemake@input$expression)`
+#' `r markdown_links(snakemake@input$expression, summaries_titles)`
 #'
 #' ## DASSIE Summaries 
 #' 
-#' `r markdown_links(snakemake@input$dassie)`
+#' `r markdown_links(snakemake@input$dassie, summaries_titles)`
 #' 
