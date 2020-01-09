@@ -25,7 +25,7 @@ suppressPackageStartupMessages({
 
 txdb <- loadDb(snakemake@input$txdb)
 
-exon_dt <- getExons(txdb, filter_length = "tx_length", filter_exon = TRUE)
+exon_dt <- getExonsDt(txdb, filter_length = "tx_length", filter_exon = TRUE)
 
 # Extract all regions around TSS and PAS
 dassie_features <- getDassieRegions(exon_dt, tx_id = "tx_id",
