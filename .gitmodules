@@ -1,5 +1,3 @@
 [submodule "DASSIE"]
 	path = DASSIE
-	url = git@github.com:mumichae/DASSIE.git
-[submodule "Submod"]
 	url = https://github.com/mumichae/DASSIE.git
