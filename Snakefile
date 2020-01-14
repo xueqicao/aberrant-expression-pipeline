@@ -5,7 +5,7 @@ import pathlib
 import Snakefile_functions as hp
 
 METHOD = 'AE'
-SCRIPT_ROOT = drop.getMethodPath(METHOD, type_='workdir')
+SCRIPT_ROOT = os.getcwd() # drop.getMethodPath(METHOD, type_='workdir')
 CONF_FILE = drop.getConfFile()
 
 parser = drop.config(config, METHOD)
