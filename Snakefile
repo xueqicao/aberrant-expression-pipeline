@@ -71,6 +71,7 @@ rule merge_bam_stats:
         ids = lambda wildcards: parser.outrider_ids[wildcards.dataset]
     run:
         with open(output[0], "w") as bam_stats:
+            bam_stats.write("sampleID\trecord_count\n")
             for f in input:
                 bam_stats.write(open(f, "r").read())
 
