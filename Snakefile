@@ -67,14 +67,12 @@ rule merge_bam_stats:
     output:
         parser.getProcDataDir() + "/aberrant_expression/{annotation}/" +
             "outrider/{dataset}/bam_coverage.tsv"
-    shell:
-        """
-        echo -e "sampleID\trecord_count" >> {output}
-        for file in {input}
-        do
-            cat $file >> {output}
-        done
-        """
+    params:
+        ids = lambda wildcards: parser.outrider_ids[wildcards.dataset]
+    run:
+        with open(output[0], "w") as bam_stats:
+            for f in input:
+                bam_stats.write(open(f, "r").read())
 
 rulegraph_filename = f'{config["htmlOutputPath"]}/{METHOD}_rulegraph'
 
