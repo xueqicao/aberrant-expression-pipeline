@@ -2,9 +2,10 @@
 import os
 import drop
 import pathlib
+import pandas as pd
 
 METHOD = 'AE'
-SCRIPT_ROOT = os.getcwd() #drop.getMethodPath(METHOD, type_='workdir')
+SCRIPT_ROOT = pathlib.Path() #drop.getMethodPath(METHOD, type_='workdir')
 CONF_FILE = drop.getConfFile()
 
 parser = drop.config(config, METHOD)
@@ -19,23 +20,60 @@ rule all:
             annotation=list(config["geneAnnotation"].keys())
         ),
         expand(
-            parser.getProcResultsDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/OUTRIDER_results.tsv",
+            parser.getProcResultsDir() + "/aberrant_expression/{annotation}" +
+                "/outrider/{dataset}/OUTRIDER_results.tsv",
             annotation=list(config["geneAnnotation"].keys()),
             dataset=parser.outrider_ids
         )
     output: touch(drop.getMethodPath(METHOD, type_='final_file'))
 
-rule read_count_qc:
-    input:
-        bam_files = lambda wildcards: parser.getFilePaths(group=wildcards.dataset, ids_by_group=config["outrider_ids"], file_type='RNA_BAM_FILE'),
-        ucsc2ncbi = os.path.join(SCRIPT_ROOT, "resource", "chr_UCSC_NCBI.txt"),
-        script = os.path.join(SCRIPT_ROOT, "Scripts", "Counting", "bamfile_coverage.sh")
+
+rule bam_stats:
+    input: 
+        bam = lambda wildcards: parser.getFilePath(wildcards.sampleID, 
+                                                   file_type="RNA_BAM_FILE"),
+        ucsc2ncbi = SCRIPT_ROOT / "resource" / "chr_UCSC_NCBI.txt"
     output:
-        qc = parser.getProcDataDir() + "/aberrant_expression/{annotation}/outrider/{dataset}/bam_coverage.tsv"
-    params:
-        sample_ids = lambda wildcards: parser.outrider_ids[wildcards.dataset]
+        parser.getProcDataDir() + 
+            "/aberrant_expression/{annotation}/coverage/{sampleID}.tsv"
     shell:
-        "{input.script} {input.ucsc2ncbi} {output.qc} {params.sample_ids} {input.bam_files}"
+        """
+        chrNamesUCSC=$(cut -f1 {input.ucsc2ncbi} | tr '\n' '|')
+        chrNamesNCBI=$(cut -f2 {input.ucsc2ncbi} | tr '\n' '|')
+    
+        # identify chromosome format
+        bam_chr=$(samtools idxstats {input.bam} | grep chr | wc -l)
+        if [ $bam_chr -ne 0 ]
+        then
+            chrNames=$chrNamesUCSC
+        else
+            chrNames=$chrNamesNCBI
+        fi
+    
+        # write coverage from idxstats into file
+        count=$(samtools idxstats {input.bam} | grep -E "^($chrNames)" | \
+                cut -f3 | paste -sd+ - | bc)
+                
+        echo -e "{wildcards.sampleID}\t${{count}}"\
+            > {output}
+        """
+
+rule merge_bam_stats:
+    input: 
+        lambda wildcards: expand(
+            parser.getProcDataDir() + 
+            "/aberrant_expression/{{annotation}}/coverage/{sampleID}.tsv",
+            sampleID=parser.outrider_ids[wildcards.dataset])
+    output:
+        parser.getProcDataDir() + "/aberrant_expression/{annotation}/" +
+            "outrider/{dataset}/bam_coverage.tsv"
+    params:
+        ids = lambda wildcards: parser.outrider_ids[wildcards.dataset]
+    run:
+        with open(output[0], "w") as bam_stats:
+            bam_stats.write("sampleID\trecord_count\n")
+            for f in input:
+                bam_stats.write(open(f, "r").read())
 
 rulegraph_filename = f'{config["htmlOutputPath"]}/{METHOD}_rulegraph'
 
