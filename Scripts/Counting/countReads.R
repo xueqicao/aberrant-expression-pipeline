@@ -27,7 +27,7 @@ suppressPackageStartupMessages({
 # Get strand specific information from sample annotation
 sampleID <- snakemake@wildcards$sampleID
 sample_anno <- fread(snakemake@config$sampleAnnotation)
-sample_anno <- sample_anno[RNA_ID == sampleID]
+sample_anno <- sample_anno[RNA_ID == sampleID][1,]
 
 strand <- tolower(sample_anno$STRAND)
 count_mode <- sample_anno$COUNT_MODE
