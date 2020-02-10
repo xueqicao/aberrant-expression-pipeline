@@ -51,6 +51,7 @@ rowRanges(total_counts) <- rowRanges(counts_list[[1]])
 
 # Add sample annotation data (colData)
 sample_anno <- fread(snakemake@config$sampleAnnotation)
+sample_anno <- sample_anno[, .SD[1], by = RNA_ID]
 col_data <- data.table(RNA_ID = colnames(total_counts))
 col_data <- left_join(col_data, sample_anno, by = "RNA_ID")
 rownames(col_data) <- col_data$RNA_ID
