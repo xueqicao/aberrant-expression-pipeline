@@ -33,13 +33,14 @@ register(MulticoreParam(snakemake@threads))
 ## subset filtered and estimate
 ods <- ods[mcols(ods)$passedFilter,] 
 ods <- estimateSizeFactors(ods)
+ods <- ods[, sizeFactors(ods) >= 0.3]
 
 ## find optimal encoding dimension
 a <- 5 
 b <- min(ncol(ods), nrow(ods)) / 3   # N/3
 Nsteps <- min(20, ncol(ods)/3, nrow(ods)/3)   # Do at most 20 steps or N/3
 # Do unique in case 2 were repeated
-pars_q <- round(exp(seq(log(a),log(b),length.out = Nsteps))) %>% unique
+pars_q <- round(seq(a,b,length.out = Nsteps)) %>% unique
 ods <- findEncodingDim(ods, params = pars_q, lnorm = TRUE, implementation = implementation)
 
 ## fit OUTRIDER
