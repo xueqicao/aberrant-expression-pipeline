@@ -15,7 +15,8 @@
 #'---
 
 suppressPackageStartupMessages({
-    library(OUTRIDER)
+    # library(OUTRIDER)
+    devtools::load_all("/data/ouga/home/ag_gagneur/cao/workspace/OUTRIDER")
     library(SummarizedExperiment)
     library(ggplot2)
     library(data.table)
@@ -33,10 +34,12 @@ register(MulticoreParam(snakemake@threads))
 ## subset filtered and estimate
 ods <- ods[mcols(ods)$passedFilter,] 
 ods <- estimateSizeFactors(ods)
-ods <- ods[, sizeFactors(ods) >= 0.3]
+ods <- ods[, sizeFactors(ods) >= 0.5]
+
+dim(ods)
 
 ## find optimal encoding dimension
-a <- 5 
+a <- min(ncol(ods), nrow(ods)) / 5
 b <- min(ncol(ods), nrow(ods)) / 3   # N/3
 Nsteps <- min(20, ncol(ods)/3, nrow(ods)/3)   # Do at most 20 steps or N/3
 # Do unique in case 2 were repeated
